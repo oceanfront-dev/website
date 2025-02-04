@@ -21,10 +21,11 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 def generate_summary_for_property(row):
     """
     Given a property row from the CSV, build a prompt and call the OpenAI API
-    to generate a 75-word summary and grade. The response is expected in the format:
-      Summary: <your summary here>
-      Grade: <your grade here>
-    This function parses that output and returns (summary, grade).
+    to generate a 150-word compelling description along with a uniqueness/rarity score.
+    The response is expected in the following format:
+      Summary: <your compelling summary here>
+      Uniqueness Score: <your uniqueness/rarity score here>
+    This function parses that output and returns (summary, uniqueness_score).
     """
     price = row.get("price", "N/A")
     url = row.get("url", "N/A")
@@ -35,8 +36,10 @@ def generate_summary_for_property(row):
     property_type = row.get("type", "N/A")
     listing_company = row.get("listing_company", "N/A")
     
+    # Updated "super prompt" for a compelling property description and uniqueness score.
     prompt = (
-        "You are a real estate analyst. Below are details for one property:\n"
+        "You are a top-tier real estate analyst and luxury property marketer. "
+        "Below are details for a unique property:\n"
         f"Price: {price}\n"
         f"URL: {url}\n"
         f"Last Updated: {last_updated}\n"
@@ -45,11 +48,13 @@ def generate_summary_for_property(row):
         f"Square Feet: {sqft}\n"
         f"Type: {property_type}\n"
         f"Listing Company: {listing_company}\n\n"
-        "Generate a concise summary of approximately 75 words describing the property, "
-        "highlighting its key features, and assign a grade (for example, 60%, 75%, or 95%) based on its overall appeal and demand for houses of that type. "
+        "Craft a compelling, vivid, and detailed description of this property in approximately 150 words. "
+        "Emphasize its unique architectural features, location advantages, and the lifestyle it offers. "
+        "Use engaging and persuasive language to capture the essence of the property and evoke a sense of exclusivity and luxury. "
+        "Additionally, evaluate the property's distinctiveness and market rarity, and assign a uniqueness/rarity score expressed as a percentage that reflects how exceptional and rare this property is compared to similar listings. "
         "Return your answer in the following format:\n"
-        "Summary: <your summary here>\n"
-        "Grade: <your grade here>"
+        "Summary: <your compelling summary here>\n"
+        "Uniqueness Score: <your uniqueness/rarity score here>"
     )
     
     try:
@@ -58,15 +63,15 @@ def generate_summary_for_property(row):
             messages=[{"role": "user", "content": prompt}]
         )
         result = response.choices[0].message.content.strip()
-        # Parse the result to separate the summary and grade.
+        # Parse the result to separate the summary and uniqueness score.
         summary = "N/A"
-        grade = "N/A"
+        uniqueness_score = "N/A"
         for line in result.splitlines():
             if line.lower().startswith("summary:"):
                 summary = line[len("summary:"):].strip()
-            elif line.lower().startswith("grade:"):
-                grade = line[len("grade:"):].strip()
-        return summary, grade
+            elif line.lower().startswith("uniqueness score:"):
+                uniqueness_score = line[len("uniqueness score:"):].strip()
+        return summary, uniqueness_score
     except Exception as e:
         return f"Error generating summary: {e}", "N/A"
 
@@ -119,7 +124,7 @@ def main():
     
     # Process each property row.
     for index, row in df.iterrows():
-        summary, grade = generate_summary_for_property(row)
+        summary, uniqueness_score = generate_summary_for_property(row)
         price = row.get("price", "N/A")
         url = row.get("url", "N/A")
         
@@ -128,7 +133,7 @@ def main():
 <div class="property-card">
   <h2>Price: ${price}</h2>
   <p><strong>Summary:</strong> {summary}</p>
-  <p><strong>Grade:</strong> {grade}</p>
+  <p><strong>Uniqueness Score:</strong> {uniqueness_score}</p>
   <p><a href="{url}" target="_blank">View Listing</a></p>
 </div>
 """

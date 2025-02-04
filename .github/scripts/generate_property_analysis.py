@@ -69,10 +69,12 @@ def generate_summary_for_property(row):
         summary = "N/A"
         uniqueness_score = "N/A"
         for line in raw_output.splitlines():
-            if line.lower().startswith("summary:"):
-                summary = line[len("summary:"):].strip()
-            elif line.lower().startswith("uniqueness score:"):
-                uniqueness_score = line[len("uniqueness score:"):].strip()
+            # Remove any leading/trailing asterisks and whitespace
+            line_clean = line.strip(" *")
+            if line_clean.lower().startswith("summary:"):
+                summary = line_clean[len("summary:"):].strip()
+            elif line_clean.lower().startswith("uniqueness score:"):
+                uniqueness_score = line_clean[len("uniqueness score:"):].strip()
         return summary, uniqueness_score
     except Exception as e:
         print("Exception during API call:", e)

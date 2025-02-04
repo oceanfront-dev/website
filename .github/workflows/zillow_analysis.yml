@@ -19,7 +19,7 @@ jobs:
           python-version: "3.9"
 
       - name: Install Dependencies
-        run: pip install requests beautifulsoup4 openai
+        run: pip install requests beautifulsoup4 openai lxml
 
       - name: Fetch Latest Release
         id: fetch_release
@@ -27,11 +27,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Fetching the latest release..."
-          response=$(curl -sSL -H "Authorization: Bearer $GITHUB_TOKEN" \
-            https://api.github.com/repos/${{ github.repository }}/releases/latest)
+          response=$(curl -sSL -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/releases/latest)
           echo "$response" > latest_release.json
-          # Uncomment the next line for debugging:
-          # cat latest_release.json
           body=$(echo "$response" | python -c "import sys, json; obj=json.load(sys.stdin); print(obj.get('body',''))")
           tag_name=$(echo "$response" | python -c "import sys, json; obj=json.load(sys.stdin); print(obj.get('tag_name',''))")
           echo "Found release tag_name=$tag_name"
@@ -63,8 +60,13 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          # Write the release body to a file for processing.
+          # Write the release body (which contains new listings info, including detail URLs) to a file.
           echo "${{ steps.fetch_release.outputs.release_body }}" > release_body.txt
+          # The updated Python script will:
+          #   - Parse release_body.txt to extract each listing’s detail URL.
+          #   - For each URL, fetch the Zillow page and extract its full text.
+          #   - Construct a prompt asking ChatGPT to generate a grade for the property and a 50-word description.
+          #   - Aggregate the responses.
           python .github/scripts/zillow_to_text.py release_body.txt > z2t_output.txt
           echo "analysis<<EOF" >> "$GITHUB_OUTPUT"
           cat z2t_output.txt >> "$GITHUB_OUTPUT"
@@ -85,7 +87,6 @@ jobs:
       - name: Update GitHub Pages Analysis File
         if: steps.check_zillow.outputs.is_zillow == 'true'
         run: |
-          # Ensure the _includes directory exists.
           mkdir -p _includes
           echo "${{ steps.z2t.outputs.analysis }}" > _includes/analysis.md
           git config user.name "github-actions"

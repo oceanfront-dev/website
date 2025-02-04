@@ -22,8 +22,13 @@ jobs:
         with:
           python-version: "3.9"
 
+      # (Optional) Install Chromedriver if needed:
+      #- name: Install Chromedriver
+      #  run: sudo apt-get install -y chromium-chromedriver
+
       - name: Install dependencies
-        run: pip install requests beautifulsoup4 lxml
+        run: |
+          pip install requests beautifulsoup4 lxml selenium pandas
 
       - name: Run Zillow Scraper
         id: scraper

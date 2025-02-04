@@ -1,29 +1,40 @@
 #!/usr/bin/env python3
 import os
-import sys
 import re
-import json
+import sys
 import requests
 from bs4 import BeautifulSoup
-import openai
 
-# Ensure your OPENAI_API_KEY is set in the environment
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY") or ""
-openai.api_key = OPENAI_API_KEY
+try:
+    from openai import OpenAI
+except ImportError:
+    print("Error: The 'openai' library (or your custom O1-mini package) is missing.")
+    sys.exit(1)
+
+# Get the OpenAI API key from the environment
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 if not OPENAI_API_KEY:
     print("Error: OPENAI_API_KEY is missing.", file=sys.stderr)
     sys.exit(1)
 
-# Regex to match lines with "Detail URL:" in the release body.
-RE_DETAIL_URL = re.compile(r"Detail URL:\s*(\S+)")
+# Initialize the client (using the same pattern as in your ct_to_text.py script)
+client = OpenAI(api_key=OPENAI_API_KEY)
 
-def extract_detail_urls(release_body):
-    """Parse the release body and extract all detail URLs."""
-    urls = RE_DETAIL_URL.findall(release_body)
-    return urls
+# Regex to extract detail URLs from the release body
+RE_DETAIL_URL = re.compile(r"Detail URL:\s*(\S+)", re.IGNORECASE)
 
-def fetch_page_text(url):
-    """Fetch the URL and extract all visible text from the page."""
+def extract_urls(body: str):
+    """
+    Parses the release body and returns a list of detail URLs.
+    Expected lines in the release body:
+      Detail URL: https://www.zillow.com/homedetails/...
+    """
+    return RE_DETAIL_URL.findall(body)
+
+def fetch_page_text(url: str) -> str:
+    """
+    Fetches the Zillow page at the given URL and extracts all visible text.
+    """
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -34,43 +45,43 @@ def fetch_page_text(url):
     try:
         response = requests.get(url, headers=headers, timeout=30)
         response.raise_for_status()
-        # Parse with BeautifulSoup to extract text.
+        # Use BeautifulSoup to extract all visible text
         soup = BeautifulSoup(response.text, "html.parser")
-        # Extract all text, stripping extra whitespace.
         text = " ".join(soup.stripped_strings)
         return text
     except Exception as e:
         return f"Error fetching URL {url}: {e}"
 
-def generate_prompt(page_text):
+def generate_prompt(page_text: str) -> str:
     """
-    Build a prompt that instructs ChatGPT to generate a grade for the property
-    and a 50-word description.
+    Constructs a prompt instructing the model to return a property grade and an exactly 50-word description.
     """
     prompt = (
-        "You are a real estate evaluator. Based on the following property information, "
-        "provide a property grade (for example, A, B, C, etc. or a numeric score) and a concise, "
-        "50-word description summarizing its key features.\n\n"
+        "You are a real estate evaluator. Based on the following property details, "
+        "provide a property grade (e.g., A, B, C, or a numeric score) and a concise, exactly 50-word description summarizing the property's key features.\n\n"
         "Property Information:\n"
         f"{page_text}\n\n"
-        "Provide your response in the format:\n"
+        "Respond strictly in the format:\n"
         "Grade: <grade>\n"
         "Description: <50-word description>"
     )
     return prompt
 
-def call_chatgpt(prompt):
-    """Call the OpenAI API with the prompt and return the response text."""
+def get_analysis_for_url(url: str) -> str:
+    """
+    For a given property URL, fetches the page text, builds a prompt, and calls the OpenAI API.
+    """
+    page_text = fetch_page_text(url)
+    prompt = generate_prompt(page_text)
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # or another model of your choice
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=200,
-            temperature=0.7,
+        # Using the same API call style as in your ct_to_text.py script:
+        resp = client.chat.completions.create(
+            model="o1-mini",
+            messages=[{"role": "user", "content": prompt}]
         )
-        return response.choices[0].message.content.strip()
+        return resp.choices[0].message.content.strip()
     except Exception as e:
-        return f"Error calling OpenAI API: {e}"
+        return f"Error calling OpenAI API for URL {url}: {e}"
 
 def main():
     if len(sys.argv) < 2:
@@ -78,26 +89,27 @@ def main():
         sys.exit(1)
 
     release_body_file = sys.argv[1]
+    if not os.path.isfile(release_body_file):
+        print(f"File '{release_body_file}' not found.", file=sys.stderr)
+        sys.exit(1)
+
     try:
         with open(release_body_file, "r", encoding="utf-8") as f:
-            release_body = f.read()
+            body = f.read()
     except Exception as e:
         print(f"Error reading file {release_body_file}: {e}", file=sys.stderr)
         sys.exit(1)
 
-    urls = extract_detail_urls(release_body)
+    urls = extract_urls(body)
     if not urls:
         print("No detail URLs found in the release body.", file=sys.stderr)
         sys.exit(1)
 
     results = []
     for url in urls:
-        page_text = fetch_page_text(url)
-        prompt = generate_prompt(page_text)
-        analysis = call_chatgpt(prompt)
+        analysis = get_analysis_for_url(url)
         results.append(f"URL: {url}\n{analysis}\n")
 
-    # Output the aggregated analysis for all listings.
     output = "\n".join(results)
     print(output)
 

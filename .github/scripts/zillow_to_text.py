@@ -17,7 +17,7 @@ if not OPENAI_API_KEY:
     print("Error: OPENAI_API_KEY is missing.", file=sys.stderr)
     sys.exit(1)
 
-# Initialize the client (using the same pattern as in your ct_to_text.py script)
+# Initialize the client (using the same style as your ct_to_text.py script)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Regex to extract detail URLs from the release body
@@ -26,21 +26,24 @@ RE_DETAIL_URL = re.compile(r"Detail URL:\s*(\S+)", re.IGNORECASE)
 def extract_urls(body: str):
     """
     Parses the release body and returns a list of detail URLs.
-    Expected lines in the release body:
+    Expected format:
       Detail URL: https://www.zillow.com/homedetails/...
     """
     return RE_DETAIL_URL.findall(body)
 
 def fetch_page_text(url: str) -> str:
     """
-    Fetches the Zillow page at the given URL and extracts all visible text.
+    Fetches the Zillow page at the given URL using robust headers
+    (similar to the first workflow) and extracts visible text.
     """
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
             "AppleWebKit/537.36 (KHTML, like Gecko) "
             "Chrome/115.0.0.0 Safari/537.36"
-        )
+        ),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9"
     }
     try:
         response = requests.get(url, headers=headers, timeout=30)
@@ -54,7 +57,8 @@ def fetch_page_text(url: str) -> str:
 
 def generate_prompt(page_text: str) -> str:
     """
-    Constructs a prompt instructing the model to return a property grade and an exactly 50-word description.
+    Constructs a prompt instructing the model to return a property grade
+    and an exactly 50-word description.
     """
     prompt = (
         "You are a real estate evaluator. Based on the following property details, "
@@ -69,12 +73,13 @@ def generate_prompt(page_text: str) -> str:
 
 def get_analysis_for_url(url: str) -> str:
     """
-    For a given property URL, fetches the page text, builds a prompt, and calls the OpenAI API.
+    For a given property URL, fetch the page text, build a prompt,
+    and call the OpenAI API to generate the analysis.
     """
     page_text = fetch_page_text(url)
     prompt = generate_prompt(page_text)
     try:
-        # Using the same API call style as in your ct_to_text.py script:
+        # Call the API using the same interface as in ct_to_text.py
         resp = client.chat.completions.create(
             model="o1-mini",
             messages=[{"role": "user", "content": prompt}]

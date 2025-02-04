@@ -1,83 +1,190 @@
 #!/usr/bin/env python3
+
 import os
+import re
 import sys
-import pandas as pd
-import openai
 
-# Ensure that the OpenAI API key is available
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-if not OPENAI_API_KEY:
-    sys.exit("Error: OPENAI_API_KEY is not set.")
-openai.api_key = OPENAI_API_KEY
+try:
+    from openai import OpenAI
+except ImportError:
+    print("Error: The 'openai' library (or your custom O1-mini package) is missing.")
+    sys.exit(1)
 
-def generate_prompt(row):
+# We assume you set OPENAI_API_KEY in your GitHub Actions environment
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+
+# Regex to detect lines like "New Record #104236 Title: Endocast [Mesh] [CT]"
+RE_RECORD_HEADER = re.compile(r'^New Record #(\d+)\s+Title:\s*(.*)$', re.IGNORECASE)
+
+def parse_records_from_body(body: str):
     """
-    Build a prompt using the property metadata.
-    Expected CSV columns might include:
-      - full_address
-      - price
-      - beds
-      - baths
-      - sqft
-      - floor_size
-      - listing_company
-    Adjust field names to match your CSV.
+    Parses the release body, looking for lines like:
+      New Record #XXXX Title: ...
+    Then captures subsequent lines of the form 'Key: Value', e.g.:
+      Detail Page URL: ...
+      Object: ...
+      Taxonomy: ...
+      etc.
+
+    Returns a list of dicts, each representing a record's data:
+      {
+        "record_number": "104236",
+        "title": "Endocast [Mesh] [CT]",
+        "detail_url": "...",
+        "Object": "...",
+        "Taxonomy": "...",
+        ...
+      }
     """
-    prompt = (
-        f"You are a real estate evaluator. Analyze the following property data and respond in exactly two paragraphs, with no extra commentary.\n\n"
-        f"Property Address: {row.get('full_address', 'N/A')}\n"
-        f"Price: {row.get('price', 'N/A')}\n"
-        f"Bedrooms: {row.get('beds', 'N/A')}, Bathrooms: {row.get('baths', 'N/A')}, Square Feet: {row.get('sqft', 'N/A')}\n"
-        f"Floor Size: {row.get('floor_size', 'N/A')}\n"
-        f"Listing Company: {row.get('listing_company', 'N/A')}\n\n"
-        "Instructions: The first paragraph must consist solely of a property grade (e.g., A, B, C, or a numeric score). The second paragraph must be exactly 50 words long, describing the property’s key features. Use this exact format:\n\n"
-        "Grade: <grade>\n"
-        "Description: <50-word description>\n"
+    records = []
+    lines = body.splitlines()
+    current_record = {}
+
+    for line in lines:
+        line = line.strip()
+        # Skip empty lines
+        if not line:
+            continue
+
+        # See if this line starts a new record
+        match = RE_RECORD_HEADER.match(line)
+        if match:
+            # If we already have a record in progress, finalize it
+            if current_record:
+                records.append(current_record)
+            current_record = {}
+            current_record["record_number"] = match.group(1)
+            current_record["title"] = match.group(2)
+            continue
+
+        # Otherwise, if line looks like "SomeKey: SomeValue"
+        if ":" in line:
+            parts = line.split(":", 1)
+            key = parts[0].strip()
+            val = parts[1].strip()
+            kl = key.lower()
+
+            # We can store known fields in canonical keys
+            if kl.startswith("detail page url"):
+                current_record["detail_url"] = val
+            elif kl == "object":
+                current_record["Object"] = val
+            elif kl == "taxonomy":
+                current_record["Taxonomy"] = val
+            elif kl == "element or part":
+                current_record["Element or Part"] = val
+            elif kl == "data manager":
+                current_record["Data Manager"] = val
+            elif kl == "date uploaded":
+                current_record["Date Uploaded"] = val
+            elif kl == "publication status":
+                current_record["Publication Status"] = val
+            elif kl == "rights statement":
+                current_record["Rights Statement"] = val
+            elif kl == "cc license":
+                current_record["CC License"] = val
+
+            # Also store the raw key-value in case we need it
+            current_record[key] = val
+
+    # After the loop, if there's a record in progress, append it
+    if current_record:
+        records.append(current_record)
+
+    return records
+
+def generate_text_for_records(records):
+    """
+    Calls the o1-mini model (via OpenAI-like usage) to generate a multi-paragraph,
+    ~200-word description for each record, focusing on species/taxonomy and object details.
+    """
+    if not OPENAI_API_KEY:
+        return "Error: OPENAI_API_KEY is missing."
+
+    # Initialize the client
+    client = OpenAI(api_key=OPENAI_API_KEY)
+
+    # If no records found, bail out
+    if not records:
+        return "No new records to summarize."
+
+    # Build a user prompt that includes each record's metadata
+    user_content = ["Below are new CT records from a MorphoSource release:\n"]
+    for rec in records:
+        record_num = rec.get("record_number", "N/A")
+        user_content.append(f"Record #{record_num}:")
+        user_content.append(f" - Title: {rec.get('title','N/A')}")
+        user_content.append(f" - URL: {rec.get('detail_url','N/A')}")
+
+        for field in [
+            "Object",
+            "Taxonomy",
+            "Element or Part",
+            "Data Manager",
+            "Date Uploaded",
+            "Publication Status",
+            "Rights Statement",
+            "CC License",
+        ]:
+            if field in rec:
+                user_content.append(f" - {field}: {rec[field]}")
+        user_content.append("")  # Blank line separator
+
+    # Add instructions for a ~200-word multi-paragraph summary
+    user_content.append(
+        "You are a scientific writer with expertise in analyzing morphological data. "
+        "You have received metadata from X-ray computed tomography scans of various biological specimens. "
+        "Please compose a multi-paragraph, one for each record/species, ~200-word plain-English description that "
+        "emphasizes each specimen’s species (taxonomy) and object details. Focus on identifying notable anatomical "
+        "or morphological features that may be revealed by the CT scanning process. Avoid discussions of copyright "
+        "or publication status. Make the final description readable for a broad audience, yet scientifically informed. "
+        "Highlight the significance of the scans for understanding the organism’s structure and potential insights "
+        "into its biology or evolution."
     )
-    return prompt
 
-def generate_analysis(df):
-    """
-    For each row in the DataFrame, generate analysis using OpenAI.
-    Returns a list of strings containing the analysis for each property.
-    """
-    results = []
-    for index, row in df.iterrows():
-        prompt = generate_prompt(row)
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=300,
-                temperature=0.7,
-            )
-            analysis = response.choices[0].message.content.strip()
-        except Exception as e:
-            analysis = f"Error generating analysis: {e}"
-        results.append(f"Property: {row.get('full_address', 'N/A')}\n{analysis}\n")
-    return results
+    try:
+        resp = client.chat.completions.create(
+            model="o1-mini",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "\n".join(user_content)
+                        }
+                    ]
+                }
+            ]
+        )
+        return resp.choices[0].message.content.strip()
+    except Exception as e:
+        return f"Error calling o1-mini model: {e}"
 
 def main():
-    # Path to the CSV file produced by Workflow 1
-    csv_path = "zillow_properties.csv"
-    if not os.path.isfile(csv_path):
-        sys.exit(f"Error: {csv_path} not found.")
-    
-    df = pd.read_csv(csv_path)
-    
-    # (Optional) You might want to filter to only direct results:
-    if "is_direct_result" in df.columns:
-        df = df[df["is_direct_result"] == True]
-    
-    analyses = generate_analysis(df)
-    output_text = "\n---\n".join(analyses)
-    
-    # Write the aggregated analysis to a markdown file used by your website.
-    output_file = "_includes/analysis.md"
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write(output_text)
-    
-    print(f"Analysis generated and saved to {output_file}")
+    """
+    1. Reads a single argument <release_body_file>
+    2. Parses it for "New Record #..." blocks
+    3. Calls generate_text_for_records(records) to produce a multi-paragraph text
+    4. Prints the final text to stdout
+    """
+    if len(sys.argv) < 2:
+        print("Usage: generate_property_analysis.py <release_body_file>")
+        sys.exit(1)
+
+    release_body_file = sys.argv[1]
+    if not os.path.isfile(release_body_file):
+        print(f"File '{release_body_file}' not found.")
+        sys.exit(1)
+
+    with open(release_body_file, "r", encoding="utf-8") as f:
+        body = f.read()
+
+    # Parse records
+    records = parse_records_from_body(body)
+    # Generate final text using the o1-mini model
+    description = generate_text_for_records(records)
+    print(description)
 
 if __name__ == "__main__":
     main()

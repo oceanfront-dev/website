@@ -21,7 +21,7 @@ if not OPENAI_API_KEY:
     logging.error("Error: OPENAI_API_KEY is missing.")
     sys.exit(1)
 
-# Initialize the OpenAI client using your custom interface (as in ct_to_text.py)
+# Initialize the OpenAI client (using your custom interface as in ct_to_text.py)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Regex to extract detail URLs from the release body
@@ -48,8 +48,8 @@ def extract_metadata(html_text: str) -> str:
     """
     Extract metadata elements from the HTML:
       - The <title> text
-      - The content of the <meta property="zillow_fb:description"> tag
-    Returns a string combining these elements.
+      - The content of <meta property="zillow_fb:description">
+    Returns a string combining these two elements.
     """
     soup = BeautifulSoup(html_text, "html.parser")
     title = soup.title.text.strip() if soup.title and soup.title.text else ""
@@ -62,21 +62,25 @@ def extract_metadata(html_text: str) -> str:
 
 def fetch_page_text(url: str) -> str:
     """
-    Load the Zillow page using Selenium.
-    First, navigate to MAIN_SEARCH_URL and wait to simulate natural browsing.
-    Then, navigate to the given detail URL with a delay.
-    Finally, extract metadata (title and meta description) from the page.
+    Use Selenium exclusively to load the page in a human-like manner.
+    1. Load the MAIN_SEARCH_URL and wait a few seconds.
+    2. Then navigate to the given detail URL and wait a few seconds.
+    3. If the page title indicates access is denied, try to click the captcha button.
+    4. Extract the page source and return the metadata.
     """
     try:
         from selenium import webdriver
         from selenium.webdriver.chrome.options import Options
         from selenium.webdriver.chrome.service import Service
         from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.common.action_chains import ActionChains
         from webdriver_manager.chrome import ChromeDriverManager
     except ImportError as ie:
         logging.error("Selenium or webdriver_manager not available.")
         return "Error: Selenium not available."
-    
+
     try:
         logging.debug("Initializing Selenium WebDriver using Service.")
         options = Options()
@@ -87,17 +91,32 @@ def fetch_page_text(url: str) -> str:
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=options)
         
-        # First, visit the main search URL to simulate natural browsing.
+        # Step 1: Visit the main search URL
         logging.debug(f"Navigating to MAIN_SEARCH_URL: {MAIN_SEARCH_URL}")
         driver.get(MAIN_SEARCH_URL)
-        time.sleep(5)  # Wait 5 seconds
+        time.sleep(5)  # Wait 5 seconds to simulate natural browsing
         
-        # Then, navigate to the detail URL.
+        # Step 2: Navigate to the detail URL
         logging.debug(f"Navigating to detail URL: {url}")
         driver.get(url)
-        time.sleep(5)  # Wait 5 seconds to simulate natural click delay
+        time.sleep(5)  # Wait 5 seconds for a natural click delay
         
-        # Get the page source and extract metadata.
+        # Step 3: If the page is blocked (title indicates denial), try to bypass captcha.
+        page_title = driver.title.strip() if driver.title else ""
+        if "Access to this page has been denied" in page_title:
+            logging.debug("Page is blocked. Attempting to bypass captcha...")
+            try:
+                # Wait until the captcha button appears and then click and hold it.
+                captcha_button = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Press') and contains(., 'Hold')]"))
+                )
+                logging.debug("Captcha button found; simulating click-and-hold.")
+                ActionChains(driver).click_and_hold(captcha_button).pause(3).release().perform()
+                # Wait for the page title to change
+                WebDriverWait(driver, 10).until(lambda d: "Access to this page has been denied" not in d.title)
+            except Exception as cap_exc:
+                logging.error(f"Failed to bypass captcha: {cap_exc}")
+        # Step 4: Extract page source and metadata
         html_text = driver.page_source
         driver.quit()
         metadata = extract_metadata(html_text)

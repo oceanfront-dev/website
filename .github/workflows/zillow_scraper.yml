@@ -2,7 +2,7 @@ name: Scrape Zillow Listings
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # every 24 hours at midnight UTC (adjust as needed)
+    - cron: "0 0 * * *"  # Runs every 24 hours at midnight UTC; adjust as needed
   workflow_dispatch:
 
 permissions:
@@ -49,7 +49,7 @@ jobs:
         if: steps.scraper.outputs.new_data == 'true'
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: zillow-updates-${{ steps.gen_ts.outputs.timestamp }}
           release_name: "Zillow Updates #${{ steps.gen_ts.outputs.timestamp }}"

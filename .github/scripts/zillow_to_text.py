@@ -3,7 +3,6 @@ import os
 import re
 import sys
 import logging
-import requests
 import time
 from bs4 import BeautifulSoup
 
@@ -49,8 +48,8 @@ def extract_metadata(html_text: str) -> str:
     """
     Extract metadata elements from the HTML:
       - The <title> text
-      - The content of <meta property="zillow_fb:description">
-    Returns a string combining these two elements.
+      - The content of the <meta property="zillow_fb:description"> tag
+    Returns a string combining these elements.
     """
     soup = BeautifulSoup(html_text, "html.parser")
     title = soup.title.text.strip() if soup.title and soup.title.text else ""
@@ -63,74 +62,50 @@ def extract_metadata(html_text: str) -> str:
 
 def fetch_page_text(url: str) -> str:
     """
-    Fetch the Zillow page at the given URL using robust headers.
-    If the requests method returns a 403, fall back to Selenium.
-    In the Selenium fallback, first visit the MAIN_SEARCH_URL and wait,
-    then navigate to the detail URL to simulate a natural click.
-    Extract metadata (title and meta description) from the page.
+    Load the Zillow page using Selenium.
+    First, navigate to MAIN_SEARCH_URL and wait to simulate natural browsing.
+    Then, navigate to the given detail URL with a delay.
+    Finally, extract metadata (title and meta description) from the page.
     """
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/115.0.0.0 Safari/537.36"
-        ),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9"
-    }
     try:
-        logging.debug(f"Attempting to fetch URL using requests: {url}")
-        response = requests.get(url, headers=headers, timeout=30)
-        if response.status_code == 403 or "403 Forbidden" in response.text:
-            logging.debug(f"Requests method returned 403 for URL: {url}")
-            raise Exception("403 Forbidden encountered with requests")
-        response.raise_for_status()
-        metadata = extract_metadata(response.text)
-        logging.debug("Successfully fetched metadata using requests.")
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
+        from selenium.webdriver.chrome.service import Service
+        from selenium.webdriver.common.by import By
+        from webdriver_manager.chrome import ChromeDriverManager
+    except ImportError as ie:
+        logging.error("Selenium or webdriver_manager not available.")
+        return "Error: Selenium not available."
+    
+    try:
+        logging.debug("Initializing Selenium WebDriver using Service.")
+        options = Options()
+        options.add_argument("--headless")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=service, options=options)
+        
+        # First, visit the main search URL to simulate natural browsing.
+        logging.debug(f"Navigating to MAIN_SEARCH_URL: {MAIN_SEARCH_URL}")
+        driver.get(MAIN_SEARCH_URL)
+        time.sleep(5)  # Wait 5 seconds
+        
+        # Then, navigate to the detail URL.
+        logging.debug(f"Navigating to detail URL: {url}")
+        driver.get(url)
+        time.sleep(5)  # Wait 5 seconds to simulate natural click delay
+        
+        # Get the page source and extract metadata.
+        html_text = driver.page_source
+        driver.quit()
+        metadata = extract_metadata(html_text)
+        logging.debug("Successfully fetched metadata using Selenium.")
         return metadata
-    except Exception as e:
-        logging.debug(f"Requests method failed for {url} with error: {e}")
-        # Fallback: Use Selenium
-        try:
-            from selenium import webdriver
-            from selenium.webdriver.chrome.options import Options
-            from selenium.webdriver.chrome.service import Service
-            from selenium.webdriver.common.by import By
-            from selenium.webdriver.support.ui import WebDriverWait
-            from selenium.webdriver.support import expected_conditions as EC
-            from webdriver_manager.chrome import ChromeDriverManager
-        except ImportError as ie:
-            logging.error("Selenium or webdriver_manager not available.")
-            return f"Error: Selenium not available. Original error: {e}"
-        try:
-            logging.debug("Initializing Selenium WebDriver using Service.")
-            options = Options()
-            options.add_argument("--headless")
-            options.add_argument("--disable-gpu")
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-dev-shm-usage")
-            service = Service(ChromeDriverManager().install())
-            driver = webdriver.Chrome(service=service, options=options)
-            
-            # First, navigate to the main search URL to simulate natural browsing.
-            logging.debug(f"Navigating to MAIN_SEARCH_URL: {MAIN_SEARCH_URL}")
-            driver.get(MAIN_SEARCH_URL)
-            time.sleep(5)  # Wait for 5 seconds
-            
-            # Then, navigate to the detail URL.
-            logging.debug(f"Navigating to detail URL: {url}")
-            driver.get(url)
-            time.sleep(5)  # Wait for 5 seconds to simulate a natural click delay
-            
-            # Get the page source and extract metadata.
-            page_source = driver.page_source
-            metadata = extract_metadata(page_source)
-            driver.quit()
-            logging.debug("Successfully fetched metadata using Selenium.")
-            return metadata
-        except Exception as se:
-            logging.error(f"Selenium method also failed for URL {url}: {se}")
-            return f"Error fetching URL {url} using both methods: {e}; Selenium error: {se}"
+    except Exception as se:
+        logging.error(f"Selenium method failed for URL {url}: {se}")
+        return f"Error fetching URL {url} using Selenium: {se}"
 
 def generate_prompt(page_text: str) -> str:
     """
@@ -153,8 +128,8 @@ def generate_prompt(page_text: str) -> str:
 
 def get_analysis_for_url(url: str) -> str:
     """
-    For a given property URL, fetch the page metadata, build a prompt,
-    and call the OpenAI API to generate the analysis.
+    For a given property URL, load the page via Selenium, extract metadata,
+    build a prompt, and call the OpenAI API to generate the analysis.
     """
     logging.debug(f"Starting analysis for URL: {url}")
     metadata = fetch_page_text(url)

@@ -17,7 +17,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Download the artifact using the GitHub CLI with authentication via GH_TOKEN.
+      # Download the CSV artifact from the upstream run using GitHub CLI.
       - name: Download CSV Artifact using GitHub CLI
         if: ${{ github.event_name == 'workflow_run' }}
         env:

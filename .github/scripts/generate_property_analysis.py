@@ -9,7 +9,7 @@ except ImportError:
     print("Error: The 'openai' library (or your custom O1-mini package) is missing.")
     sys.exit(1)
 
-# Get the OpenAI API key from the environment.
+# Retrieve the API key from the environment.
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 if not OPENAI_API_KEY:
     print("Error: OPENAI_API_KEY is missing.")
@@ -20,12 +20,12 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 def generate_summary_for_property(row):
     """
-    Given a property row from the CSV, build a prompt and call the OpenAI API
-    to generate a 150-word compelling description along with a uniqueness/rarity score.
-    The response is expected in the following format:
+    For a given property row, builds a super prompt and calls the OpenAI API
+    to generate a compelling 150-word property description along with a uniqueness/rarity score.
+    Expected output format from the API:
       Summary: <your compelling summary here>
       Uniqueness Score: <your uniqueness/rarity score here>
-    This function parses that output and returns (summary, uniqueness_score).
+    This function returns (summary, uniqueness_score).
     """
     price = row.get("price", "N/A")
     url = row.get("url", "N/A")
@@ -36,7 +36,7 @@ def generate_summary_for_property(row):
     property_type = row.get("type", "N/A")
     listing_company = row.get("listing_company", "N/A")
     
-    # Updated "super prompt" for a compelling property description and uniqueness score.
+    # Super prompt for a compelling description and uniqueness score.
     prompt = (
         "You are a top-tier real estate analyst and luxury property marketer. "
         "Below are details for a unique property:\n"
@@ -51,7 +51,8 @@ def generate_summary_for_property(row):
         "Craft a compelling, vivid, and detailed description of this property in approximately 150 words. "
         "Emphasize its unique architectural features, location advantages, and the lifestyle it offers. "
         "Use engaging and persuasive language to capture the essence of the property and evoke a sense of exclusivity and luxury. "
-        "Additionally, evaluate the property's distinctiveness and market rarity, and assign a uniqueness/rarity score expressed as a percentage that reflects how exceptional and rare this property is compared to similar listings. "
+        "Additionally, evaluate the property's distinctiveness and market rarity, and assign a uniqueness/rarity score expressed as a percentage "
+        "that reflects how exceptional and rare this property is compared to similar listings. "
         "Return your answer in the following format:\n"
         "Summary: <your compelling summary here>\n"
         "Uniqueness Score: <your uniqueness/rarity score here>"
@@ -62,17 +63,19 @@ def generate_summary_for_property(row):
             model="o1-mini",
             messages=[{"role": "user", "content": prompt}]
         )
-        result = response.choices[0].message.content.strip()
-        # Parse the result to separate the summary and uniqueness score.
+        raw_output = response.choices[0].message.content.strip()
+        print("Raw API output:", raw_output)  # Debug: print the raw API response
+        
         summary = "N/A"
         uniqueness_score = "N/A"
-        for line in result.splitlines():
+        for line in raw_output.splitlines():
             if line.lower().startswith("summary:"):
                 summary = line[len("summary:"):].strip()
             elif line.lower().startswith("uniqueness score:"):
                 uniqueness_score = line[len("uniqueness score:"):].strip()
         return summary, uniqueness_score
     except Exception as e:
+        print("Exception during API call:", e)
         return f"Error generating summary: {e}", "N/A"
 
 def main():
@@ -88,7 +91,7 @@ def main():
         sys.exit(1)
     
     results = []
-
+    
     # Create a header with inline CSS for a Zillow-like clean card layout.
     header = """
 <style>
@@ -118,17 +121,16 @@ def main():
 </style>
 
 # Property Listings Analysis
-
 """
     results.append(header)
     
-    # Process each property row.
+    # Process each property row from the CSV.
     for index, row in df.iterrows():
         summary, uniqueness_score = generate_summary_for_property(row)
         price = row.get("price", "N/A")
         url = row.get("url", "N/A")
         
-        # Format each property as a "card" in HTML within markdown.
+        # Format each property as a styled "card" with the listing URL.
         card = f"""
 <div class="property-card">
   <h2>Price: ${price}</h2>
@@ -149,7 +151,7 @@ def main():
         print(f"Error writing output file: {e}")
         sys.exit(1)
     
-    # Also print to stdout.
+    # Also print the final output to stdout.
     print(final_output)
 
 if __name__ == "__main__":

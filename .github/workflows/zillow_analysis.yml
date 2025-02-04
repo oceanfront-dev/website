@@ -19,7 +19,10 @@ jobs:
           python-version: "3.9"
 
       - name: Install Dependencies
-        run: pip install requests beautifulsoup4 openai lxml
+        run: |
+          pip install requests beautifulsoup4 openai lxml selenium
+          # Optionally, install webdriver-manager for easier ChromeDriver management:
+          pip install webdriver-manager
 
       - name: Fetch Latest Release
         id: fetch_release
@@ -60,14 +63,8 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          # Write the release body (with new listing info and detail URLs) to a file.
+          # Write the release body (which contains new listing info and detail URLs) to a file.
           echo "${{ steps.fetch_release.outputs.release_body }}" > release_body.txt
-          # The updated Python script will:
-          #   - Parse release_body.txt to extract each listing’s detail URL.
-          #   - For each URL, fetch the Zillow page using robust headers (like in the first workflow)
-          #     and extract its full text.
-          #   - Construct a prompt asking ChatGPT to generate a property grade and an exactly 50-word description.
-          #   - Aggregate the responses.
           python .github/scripts/zillow_to_text.py release_body.txt > z2t_output.txt
           echo "analysis<<EOF" >> "$GITHUB_OUTPUT"
           cat z2t_output.txt >> "$GITHUB_OUTPUT"

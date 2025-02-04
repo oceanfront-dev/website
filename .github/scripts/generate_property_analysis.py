@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
+import re
 import pandas as pd
 
 try:
@@ -22,10 +23,14 @@ def generate_summary_for_property(row):
     """
     For a given property row, builds a super prompt and calls the OpenAI API
     to generate a compelling 150-word property description along with a uniqueness/rarity score.
-    Expected output format from the API:
-      Summary: <your compelling summary here>
-      Uniqueness Score: <your uniqueness/rarity score here>
-    This function returns (summary, uniqueness_score).
+    Expected output format from the API is a multi-line text such as:
+    
+      **Summary:**
+      <summary text possibly spanning multiple lines>
+      **Uniqueness Score:** <score>
+    
+    This function uses a regex to capture all the summary text and the uniqueness score.
+    It returns a tuple (summary, uniqueness_score).
     """
     price = row.get("price", "N/A")
     url = row.get("url", "N/A")
@@ -65,16 +70,17 @@ def generate_summary_for_property(row):
         )
         raw_output = response.choices[0].message.content.strip()
         print("Raw API output:", raw_output)  # Debug: print the raw API response
-        
-        summary = "N/A"
-        uniqueness_score = "N/A"
-        for line in raw_output.splitlines():
-            # Remove any leading/trailing asterisks and whitespace
-            line_clean = line.strip(" *")
-            if line_clean.lower().startswith("summary:"):
-                summary = line_clean[len("summary:"):].strip()
-            elif line_clean.lower().startswith("uniqueness score:"):
-                uniqueness_score = line_clean[len("uniqueness score:"):].strip()
+
+        # Use regex to extract the summary and uniqueness score from the multi-line output.
+        # The regex is case-insensitive and dot matches newline.
+        pattern = r"(?si)summary:\s*(.*?)\s*uniqueness score:\s*(.*)"
+        match = re.search(pattern, raw_output)
+        if match:
+            summary = match.group(1).strip()
+            uniqueness_score = match.group(2).strip()
+        else:
+            summary = "N/A"
+            uniqueness_score = "N/A"
         return summary, uniqueness_score
     except Exception as e:
         print("Exception during API call:", e)

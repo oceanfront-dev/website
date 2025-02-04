@@ -21,7 +21,7 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 def generate_summary_for_property(row):
     """
     Given a pandas Series (a property row from the CSV), builds a prompt
-    and calls the OpenAI API to generate a 50-word summary and grade.
+    and calls the OpenAI API to generate a 75-word summary and grade.
     """
     # Use N/A for missing values.
     price = row.get("price", "N/A")
@@ -44,8 +44,8 @@ def generate_summary_for_property(row):
         f"Square Feet: {sqft}\n"
         f"Type: {property_type}\n"
         f"Listing Company: {listing_company}\n\n"
-        "Generate a concise summary of approximately 50 words describing the property, "
-        "highlighting its key features, and assign a grade (for example, A, B, or C) based on its overall appeal. "
+        "Generate a concise summary of approximately 75 words describing the property, "
+        "highlighting its key features, and assign a grade (for example, 95%, 75%, or 85%) based on its overall appeal, price, and location of the listing. "
         "Return your answer in the following format:\n"
         "Summary: <your summary here>\n"
         "Grade: <your grade here>"

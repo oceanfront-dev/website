@@ -6,11 +6,13 @@ on:
     types: [completed]
   push:
     paths:
-      - "zillow_properties.csv"  # Trigger if the CSV is updated
+      - "zillow_properties.csv"
 
 jobs:
   analysis:
     runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v3

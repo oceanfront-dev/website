@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows: ["Scrape Zillow Listings"]
     types: [completed]
+  workflow_dispatch:
 
 jobs:
   zillow_analysis_job:

@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-
 import os
-import re
 import sys
+import pandas as pd
 
 try:
     from openai import OpenAI
@@ -10,181 +9,94 @@ except ImportError:
     print("Error: The 'openai' library (or your custom O1-mini package) is missing.")
     sys.exit(1)
 
-# We assume you set OPENAI_API_KEY in your GitHub Actions environment
+# Get the OpenAI API key from the environment.
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+if not OPENAI_API_KEY:
+    print("Error: OPENAI_API_KEY is missing.")
+    sys.exit(1)
 
-# Regex to detect lines like "New Record #104236 Title: Endocast [Mesh] [CT]"
-RE_RECORD_HEADER = re.compile(r'^New Record #(\d+)\s+Title:\s*(.*)$', re.IGNORECASE)
+# Initialize the OpenAI-like client.
+client = OpenAI(api_key=OPENAI_API_KEY)
 
-def parse_records_from_body(body: str):
+def generate_summary_for_property(row):
     """
-    Parses the release body, looking for lines like:
-      New Record #XXXX Title: ...
-    Then captures subsequent lines of the form 'Key: Value', e.g.:
-      Detail Page URL: ...
-      Object: ...
-      Taxonomy: ...
-      etc.
-
-    Returns a list of dicts, each representing a record's data:
-      {
-        "record_number": "104236",
-        "title": "Endocast [Mesh] [CT]",
-        "detail_url": "...",
-        "Object": "...",
-        "Taxonomy": "...",
-        ...
-      }
+    Given a pandas Series (a property row from the CSV), builds a prompt
+    and calls the OpenAI API to generate a 50-word summary and grade.
     """
-    records = []
-    lines = body.splitlines()
-    current_record = {}
-
-    for line in lines:
-        line = line.strip()
-        # Skip empty lines
-        if not line:
-            continue
-
-        # See if this line starts a new record
-        match = RE_RECORD_HEADER.match(line)
-        if match:
-            # If we already have a record in progress, finalize it
-            if current_record:
-                records.append(current_record)
-            current_record = {}
-            current_record["record_number"] = match.group(1)
-            current_record["title"] = match.group(2)
-            continue
-
-        # Otherwise, if line looks like "SomeKey: SomeValue"
-        if ":" in line:
-            parts = line.split(":", 1)
-            key = parts[0].strip()
-            val = parts[1].strip()
-            kl = key.lower()
-
-            # We can store known fields in canonical keys
-            if kl.startswith("detail page url"):
-                current_record["detail_url"] = val
-            elif kl == "object":
-                current_record["Object"] = val
-            elif kl == "taxonomy":
-                current_record["Taxonomy"] = val
-            elif kl == "element or part":
-                current_record["Element or Part"] = val
-            elif kl == "data manager":
-                current_record["Data Manager"] = val
-            elif kl == "date uploaded":
-                current_record["Date Uploaded"] = val
-            elif kl == "publication status":
-                current_record["Publication Status"] = val
-            elif kl == "rights statement":
-                current_record["Rights Statement"] = val
-            elif kl == "cc license":
-                current_record["CC License"] = val
-
-            # Also store the raw key-value in case we need it
-            current_record[key] = val
-
-    # After the loop, if there's a record in progress, append it
-    if current_record:
-        records.append(current_record)
-
-    return records
-
-def generate_text_for_records(records):
-    """
-    Calls the o1-mini model (via OpenAI-like usage) to generate a multi-paragraph,
-    ~200-word description for each record, focusing on species/taxonomy and object details.
-    """
-    if not OPENAI_API_KEY:
-        return "Error: OPENAI_API_KEY is missing."
-
-    # Initialize the client
-    client = OpenAI(api_key=OPENAI_API_KEY)
-
-    # If no records found, bail out
-    if not records:
-        return "No new records to summarize."
-
-    # Build a user prompt that includes each record's metadata
-    user_content = ["Below are new CT records from a MorphoSource release:\n"]
-    for rec in records:
-        record_num = rec.get("record_number", "N/A")
-        user_content.append(f"Record #{record_num}:")
-        user_content.append(f" - Title: {rec.get('title','N/A')}")
-        user_content.append(f" - URL: {rec.get('detail_url','N/A')}")
-
-        for field in [
-            "Object",
-            "Taxonomy",
-            "Element or Part",
-            "Data Manager",
-            "Date Uploaded",
-            "Publication Status",
-            "Rights Statement",
-            "CC License",
-        ]:
-            if field in rec:
-                user_content.append(f" - {field}: {rec[field]}")
-        user_content.append("")  # Blank line separator
-
-    # Add instructions for a ~200-word multi-paragraph summary
-    user_content.append(
-        "You are a scientific writer with expertise in analyzing morphological data. "
-        "You have received metadata from X-ray computed tomography scans of various biological specimens. "
-        "Please compose a multi-paragraph, one for each record/species, ~200-word plain-English description that "
-        "emphasizes each specimen’s species (taxonomy) and object details. Focus on identifying notable anatomical "
-        "or morphological features that may be revealed by the CT scanning process. Avoid discussions of copyright "
-        "or publication status. Make the final description readable for a broad audience, yet scientifically informed. "
-        "Highlight the significance of the scans for understanding the organism’s structure and potential insights "
-        "into its biology or evolution."
+    # Use N/A for missing values.
+    price = row.get("price", "N/A")
+    url = row.get("url", "N/A")
+    last_updated = row.get("last_updated", "N/A")
+    beds = row.get("beds", "N/A")
+    baths = row.get("baths", "N/A")
+    sqft = row.get("sqft", "N/A")
+    property_type = row.get("type", "N/A")
+    listing_company = row.get("listing_company", "N/A")
+    
+    # Build the prompt.
+    prompt = (
+        "You are a real estate analyst. Below are details for one property:\n"
+        f"Price: {price}\n"
+        f"URL: {url}\n"
+        f"Last Updated: {last_updated}\n"
+        f"Beds: {beds}\n"
+        f"Baths: {baths}\n"
+        f"Square Feet: {sqft}\n"
+        f"Type: {property_type}\n"
+        f"Listing Company: {listing_company}\n\n"
+        "Generate a concise summary of approximately 50 words describing the property, "
+        "highlighting its key features, and assign a grade (for example, A, B, or C) based on its overall appeal. "
+        "Return your answer in the following format:\n"
+        "Summary: <your summary here>\n"
+        "Grade: <your grade here>"
     )
-
+    
     try:
-        resp = client.chat.completions.create(
+        response = client.chat.completions.create(
             model="o1-mini",
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": "\n".join(user_content)
-                        }
-                    ]
-                }
-            ]
+            messages=[{"role": "user", "content": prompt}]
         )
-        return resp.choices[0].message.content.strip()
+        result = response.choices[0].message.content.strip()
+        return result
     except Exception as e:
-        return f"Error calling o1-mini model: {e}"
+        return f"Error generating summary: {e}"
 
 def main():
-    """
-    1. Reads a single argument <release_body_file>
-    2. Parses it for "New Record #..." blocks
-    3. Calls generate_text_for_records(records) to produce a multi-paragraph text
-    4. Prints the final text to stdout
-    """
-    if len(sys.argv) < 2:
-        print("Usage: generate_property_analysis.py <release_body_file>")
+    # Verify that the CSV file exists.
+    csv_path = "zillow_properties.csv"
+    if not os.path.isfile(csv_path):
+        print("Error: zillow_properties.csv not found.")
         sys.exit(1)
-
-    release_body_file = sys.argv[1]
-    if not os.path.isfile(release_body_file):
-        print(f"File '{release_body_file}' not found.")
+    
+    # Read the CSV into a pandas DataFrame.
+    try:
+        df = pd.read_csv(csv_path)
+    except Exception as e:
+        print(f"Error reading CSV file: {e}")
         sys.exit(1)
-
-    with open(release_body_file, "r", encoding="utf-8") as f:
-        body = f.read()
-
-    # Parse records
-    records = parse_records_from_body(body)
-    # Generate final text using the o1-mini model
-    description = generate_text_for_records(records)
-    print(description)
+    
+    # Build summaries for each property.
+    results = []
+    for index, row in df.iterrows():
+        summary = generate_summary_for_property(row)
+        # You can include an identifier for each property if desired.
+        results.append(f"Property {index + 1}:\n{summary}\n")
+    
+    # Combine all summaries.
+    final_output = "\n".join(results)
+    
+    # Write the final output to a file (which your workflow will commit and release).
+    output_path = "_includes/analysis.md"
+    try:
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(final_output)
+        print("Analysis successfully written to", output_path)
+    except Exception as e:
+        print(f"Error writing output file: {e}")
+        sys.exit(1)
+    
+    # Also print to stdout.
+    print(final_output)
 
 if __name__ == "__main__":
     main()

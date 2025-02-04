@@ -1,49 +1,109 @@
-Property 1:
-Summary: Luxurious 5-bedroom, 7-bathroom residence in North Palm Beach, FL, spanning 6,876 sq ft. Priced at $13,750,000, this elegant house offers spacious living areas, high-end finishes, and prime location. Ideal for discerning buyers seeking upscale amenities and comfort. Listed by SUTTER & NUGENT LLC.
 
-Grade: A
+<style>
+.property-card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #fff;
+}
+.property-card h2 {
+  margin-top: 0;
+  font-size: 1.5em;
+  color: #2a9d8f;
+}
+.property-card p {
+  margin: 8px 0;
+  line-height: 1.5;
+  font-family: Arial, sans-serif;
+}
+.property-card a {
+  color: #264653;
+  text-decoration: none;
+  font-weight: bold;
+}
+</style>
 
-Property 2:
-Summary: Stylish 2-bedroom, 2-bath condo in desirable Juno Beach located at 630 Ocean Dr. Offering 1,247 sq ft of modern living space, this property is competitively priced at $775,000. Listed by Platinum Properties/The Keyes and recently updated, it presents an attractive option for buyers seeking coastal living.
+# Property Listings Analysis
 
-Grade: B
 
-Property 3:
-Summary: Elegant 4-bedroom, 4-bathroom home in Palm Beach Gardens offering 3,002 sq ft of living space. Priced at $1,299,000, this stylish house features spacious interiors and modern amenities, ideal for upscale family living. Listed by SUTTER & NUGENT LLC and recently updated.
 
-Grade: A
+<div class="property-card">
+  <h2>Price: $13750000</h2>
+  <p><strong>Summary:</strong> This luxurious North Palm Beach home boasts 5 bedrooms and 7 bathrooms across 6,876 square feet. Priced at $13,750,000 and listed by SUTTER & NUGENT LLC, the property offers spacious living areas ideal for upscale lifestyles. Recently updated, it features elegant finishes and is situated in a prestigious neighborhood, making it highly desirable for discerning buyers seeking both comfort and sophistication.</p>
+  <p><strong>Grade:</strong> 95%</p>
+  <p><a href="https://www.zillow.com/homedetails/2162-Radnor-Rd-North-Palm-Beach-FL-33408/46675881_zpid/" target="_blank">View Listing</a></p>
+</div>
 
-Property 4:
-Summary: Priced at $348,000, this 2-bedroom, 2-bath condo in Palm Beach Gardens offers 1,149 sq ft of modern living space. Located at 2916 Tuscany Ct APT 303, it features updated amenities and is listed by KEYRENTERS South Florida. Recently updated, it presents a great investment opportunity.
 
-Grade: B
+<div class="property-card">
+  <h2>Price: $775000</h2>
+  <p><strong>Summary:</strong> This stylish 2-bedroom, 2-bath condo at 630 Ocean Dr, Apt 308 in Juno Beach offers 1,247 sq ft of modern living space. Priced at $775,000 and listed by Platinum Properties/The Keyes, the unit boasts prime beachfront access, stunning ocean views, and contemporary amenities. Located in a sought-after area, residents enjoy easy access to pristine beaches, upscale dining, and vibrant local attractions, making it an excellent choice for coastal living enthusiasts.</p>
+  <p><strong>Grade:</strong> 90%</p>
+  <p><a href="https://www.zillow.com/homedetails/630-Ocean-Dr-APT-308-Juno-Beach-FL-33408/46800761_zpid/" target="_blank">View Listing</a></p>
+</div>
 
-Property 5:
-Summary: Luxurious 4-bedroom, 6-bathroom estate in Palm Beach Gardens spanning 6,504 sq ft. Listed for $10,000,000 by COMPASS FLORIDA LLC, the property offers expansive living spaces, high-end finishes, and premium amenities in a prestigious neighborhood. Ideal for upscale living and entertaining.
 
-Grade: A
+<div class="property-card">
+  <h2>Price: $1299000</h2>
+  <p><strong>Summary:</strong> This stunning 4-bedroom, 4-bathroom house in Palm Beach Gardens spans 3,002 square feet and is priced at $1,299,000. Listed by SUTTER & NUGENT LLC, the property offers spacious living areas, modern amenities, and a well-designed layout ideal for family living. Located in a sought-after neighborhood, it provides both comfort and luxury, making it a highly attractive option for potential buyers in the South Florida real estate market.</p>
+  <p><strong>Grade:</strong> 90%</p>
+  <p><a href="https://www.zillow.com/homedetails/13391-William-Myers-Ct-Palm-Beach-Gardens-FL-33410/46674061_zpid/" target="_blank">View Listing</a></p>
+</div>
 
-Property 6:
-Summary: Stunning 2-bedroom, 3-bath home in Jupiter, FL offering 1,990 sq ft of modern living space. Priced at $1,295,000 and listed by Village Realty Group LLC, this property features upscale amenities and a desirable location, making it ideal for luxury buyers.
 
-Grade: A
+<div class="property-card">
+  <h2>Price: $348000</h2>
+  <p><strong>Summary:</strong> This well-appointed 2-bedroom, 2-bath condo in Palm Beach Gardens spans 1,149 sq ft and is listed for $348,000 by KEYRENTERS SOUTH FLORIDA. Recently updated, the unit offers modern amenities and a comfortable living space ideal for professionals or small families. Its prime location provides easy access to local amenities, schools, and recreational facilities, enhancing its appeal in a sought-after Florida community.</p>
+  <p><strong>Grade:</strong> 88%</p>
+  <p><a href="https://www.zillow.com/homedetails/2916-Tuscany-Ct-APT-303-Palm-Beach-Gardens-FL-33410/71108953_zpid/" target="_blank">View Listing</a></p>
+</div>
 
-Property 7:
-Summary: Beautiful 2-bedroom, 2-bath condo in North Palm Beach priced at $515,000. Offering 1,244 sq ft of comfortable living space, this unit is listed by Sotheby’s International Realty. Situated in a desirable location, it features modern amenities and was recently updated, making it an attractive option for buyers.
 
-Grade: A
+<div class="property-card">
+  <h2>Price: $10000000</h2>
+  <p><strong>Summary:</strong> N/A</p>
+  <p><strong>Grade:</strong> N/A</p>
+  <p><a href="https://www.zillow.com/homedetails/2408-Azure-Cir-Palm-Beach-Gardens-FL-33410/46675591_zpid/" target="_blank">View Listing</a></p>
+</div>
 
-Property 8:
-Summary: Luxurious 3-bedroom, 3-bath condo in prime North Palm Beach. Spanning 1,949 sq ft, this elegant residence offers modern amenities and sophisticated finishes. Priced at $2,595,000 and listed by ECHO Fine Properties, it’s ideal for those seeking upscale coastal living.
 
-Grade: A
+<div class="property-card">
+  <h2>Price: $1295000</h2>
+  <p><strong>Summary:</strong> This stunning 2-bedroom, 3-bathroom home in Jupiter, FL offers 1,990 sq ft of modern living space. Priced at $1,295,000, the property features spacious interiors, contemporary amenities, and is managed by Village Realty Group LLC. Located in a sought-after neighborhood, it provides convenient access to local amenities, beaches, and excellent schools. Recently listed just four hours ago, it represents a prime opportunity for buyers seeking quality and comfort in a desirable Floridian community.</p>
+  <p><strong>Grade:</strong> 90%</p>
+  <p><a href="https://www.zillow.com/homedetails/202-Royal-Tern-Ct-Jupiter-FL-33477/66108254_zpid/" target="_blank">View Listing</a></p>
+</div>
 
-Property 9:
-Summary: Luxurious 5-bedroom, 7-bathroom estate in North Palm Beach boasting 5,691 sq ft of elegant living space. Located at 780 Harbour Isle Ct, this high-end property offers spacious rooms, premium amenities, and exquisite finishes. Listed by THE KEYES COMPANY (PBG).
 
-Grade: A
+<div class="property-card">
+  <h2>Price: $515000</h2>
+  <p><strong>Summary:</strong> </p>
+  <p><strong>Grade:</strong> 85%</p>
+  <p><a href="https://www.zillow.com/homedetails/136-Lakeshore-Dr-APT-1010-North-Palm-Beach-FL-33408/46885708_zpid/" target="_blank">View Listing</a></p>
+</div>
 
-Property 10:
-Summary: Elegant 3-bedroom, 2-bathroom home in Jupiter, FL, offering 2,200 sq ft of living space. Priced at $1,650,000, this property features modern finishes and is listed by Douglas Elliman (Jupiter). Recently updated, it presents a prime opportunity in a desirable neighborhood.
 
-Grade: B
+<div class="property-card">
+  <h2>Price: $2595000</h2>
+  <p><strong>Summary:</strong> Priced at $2,595,000, this elegant 3-bedroom, 3-bath condo offers 1,949 sq ft of sophisticated living in North Palm Beach’s prestigious 1 Water Club Way. Managed by ECHO Fine Properties, the unit features spacious layouts, modern finishes, and stunning waterfront views. Residents enjoy access to top-tier amenities, including a pool, fitness center, and private balconies. Its prime location provides easy access to upscale dining, shopping, and beaches, making it an ideal choice for luxury homebuyers seeking comfort and exclusivity.</p>
+  <p><strong>Grade:</strong> 93%</p>
+  <p><a href="https://www.zillow.com/homedetails/1-Water-Club-Way-APT-1801-North-Palm-Beach-FL-33408/247270984_zpid/" target="_blank">View Listing</a></p>
+</div>
+
+
+<div class="property-card">
+  <h2>Price: $6695000</h2>
+  <p><strong>Summary:</strong> N/A</p>
+  <p><strong>Grade:</strong> N/A</p>
+  <p><a href="https://www.zillow.com/homedetails/780-Harbour-Isle-Ct-North-Palm-Beach-FL-33410/54150495_zpid/" target="_blank">View Listing</a></p>
+</div>
+
+
+<div class="property-card">
+  <h2>Price: $1650000</h2>
+  <p><strong>Summary:</strong> Priced at $1,650,000, this elegant Jupiter residence offers 3 bedrooms, 2 bathrooms, and 2,200 square feet of thoughtfully designed living space. Located in a desirable neighborhood, the home features modern finishes, ample natural light, and spacious layouts ideal for comfortable family living. Listed by the reputable Douglas Elliman (Jupiter), this property combines quality construction with a prime location, making it an attractive option for discerning buyers in the competitive Florida market.</p>
+  <p><strong>Grade:</strong> 90%</p>
+  <p><a href="https://www.zillow.com/homedetails/1660-S-A1a-UNIT-222-Jupiter-FL-33477/46817066_zpid/" target="_blank">View Listing</a></p>
+</div>

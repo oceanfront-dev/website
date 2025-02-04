@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 import re
 import json
@@ -7,9 +8,8 @@ from bs4 import BeautifulSoup
 import openai
 
 # Ensure your OPENAI_API_KEY is set in the environment
-OPENAI_API_KEY = openai.api_key =  ( 
-    sys.environ.get("OPENAI_API_KEY") or ""
-)
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY") or ""
+openai.api_key = OPENAI_API_KEY
 if not OPENAI_API_KEY:
     print("Error: OPENAI_API_KEY is missing.", file=sys.stderr)
     sys.exit(1)
@@ -25,9 +25,11 @@ def extract_detail_urls(release_body):
 def fetch_page_text(url):
     """Fetch the URL and extract all visible text from the page."""
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                      "AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/115.0.0.0 Safari/537.36"
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/115.0.0.0 Safari/537.36"
+        )
     }
     try:
         response = requests.get(url, headers=headers, timeout=30)

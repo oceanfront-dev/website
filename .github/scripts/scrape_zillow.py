@@ -10,13 +10,13 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from bs4 import BeautifulSoup
 
 # File to store the previous total listing count
 LAST_COUNT_FILE = ".github/last_count.txt"
 
-# URL to scrape (using the more detailed jupyter notebook version)
+# URL to scrape (using the detailed query string)
 SEARCH_URL = (
     "https://www.zillow.com/juno-beach-north-palm-beach-fl/"
     "?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22isMapVisible%22%3Afalse%2C"
@@ -29,6 +29,7 @@ SEARCH_URL = (
 
 class ZillowScraper:
     def __init__(self):
+        # Set up Chrome options with headless mode and anti-detection measures.
         self.options = webdriver.ChromeOptions()
         self.options.add_argument('--headless')
         self.options.add_argument('--disable-gpu')
@@ -45,7 +46,7 @@ class ZillowScraper:
 
     def start_driver(self):
         self.driver = webdriver.Chrome(options=self.options)
-        # Prevent detection by overriding the navigator.webdriver property.
+        # Override the navigator.webdriver property to help prevent detection.
         self.driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
             'source': '''
                 Object.defineProperty(navigator, 'webdriver', {
@@ -75,8 +76,8 @@ class ZillowScraper:
         try:
             self.start_driver()
             self.driver.get(url)
-            time.sleep(5)  # Wait for initial page load
-
+            time.sleep(5)  # Allow the initial page load
+            
             # Try several CSS selectors to match the property cards.
             possible_selectors = [
                 "article[class*='StyledPropertyCard']",
@@ -106,10 +107,11 @@ class ZillowScraper:
             soup = BeautifulSoup(self.driver.page_source, 'html.parser')
             properties = []
 
+            # Loop through each property card found.
             for card in soup.select(used_selector):
                 property_data = {}
 
-                # Try extracting JSON‑LD data
+                # First, try to extract JSON‑LD data
                 scripts = card.find_all("script", type="application/ld+json")
                 for script in scripts:
                     try:
@@ -129,6 +131,7 @@ class ZillowScraper:
                                 })
                             elif data.get("@type") == "Event" and 'offers' in data:
                                 property_data['price'] = data.get('offers', {}).get('price')
+                                # If geo-data isn’t set, try getting it from the location.
                                 if not property_data.get('latitude'):
                                     location = data.get('location', {})
                                     geo_data = location.get('geo', {})
@@ -139,16 +142,18 @@ class ZillowScraper:
                     except (json.JSONDecodeError, AttributeError):
                         continue
 
-                # Fallback to HTML selectors if JSON‑LD is not available
+                # Fallback to direct HTML extraction if JSON‑LD did not provide the price.
                 if not property_data.get('price'):
                     price_elem = card.select_one("[data-test='property-card-price']")
                     if price_elem:
                         property_data['price'] = price_elem.text.strip()
 
+                # Ensure we have the property URL.
                 if not property_data.get('url'):
                     url_elem = card.select_one("a[href*='/homedetails/']")
                     if url_elem:
                         href = url_elem['href']
+                        # Clean up the URL if necessary.
                         href = href.replace('https://www.zillow.comhttps://www.zillow.com', 'https://www.zillow.com')
                         if href.startswith('/'):
                             property_data['url'] = 'https://www.zillow.com' + href
@@ -157,11 +162,12 @@ class ZillowScraper:
                         else:
                             property_data['url'] = 'https://www.zillow.com/' + href
 
+                # Extract the "last updated" badge text if available.
                 update_badge = card.find("span", class_=re.compile("StyledPropertyCardBadge-.*"))
                 if update_badge:
                     property_data['last_updated'] = update_badge.text.strip()
 
-                # Build a full address from available parts
+                # Build a full address from available address parts.
                 address_parts = []
                 if property_data.get('address'):
                     address_parts.append(property_data['address'])
@@ -174,7 +180,7 @@ class ZillowScraper:
                 if address_parts:
                     property_data['full_address'] = ', '.join(address_parts)
 
-                # Extract additional stats (beds, baths, sqft)
+                # Extract additional statistics (beds, baths, sqft) from details.
                 stats_div = card.select_one("ul[class*='StyledPropertyCardHomeDetailsList']")
                 if stats_div:
                     stats = stats_div.get_text()
@@ -188,12 +194,14 @@ class ZillowScraper:
                     if sqft_match:
                         property_data['sqft'] = sqft_match.group(1).replace(',', '')
 
-                # Optionally, extract property type and listing company
+                # Optionally, extract property type.
                 type_div = card.find(text=re.compile(r'(House|Condo|Apartment)\s+for\s+sale'))
                 if type_div:
                     m = re.search(r'(House|Condo|Apartment)', type_div)
                     if m:
                         property_data['type'] = m.group(1)
+
+                # Optionally, extract the listing company.
                 company_div = card.find("div", class_=re.compile("StyledPropertyCardDataArea-.*"))
                 if company_div and not re.search(r'(House|Condo|Apartment)\s+for\s+sale', company_div.text):
                     property_data['listing_company'] = company_div.text.strip()
@@ -201,9 +209,10 @@ class ZillowScraper:
                 if property_data:
                     properties.append(property_data)
 
+            # Convert the list of properties into a DataFrame.
             df = pd.DataFrame(properties)
             if not df.empty:
-                # (Optional) Mark “direct results” if you can detect the total count from the page.
+                # Mark “direct results” if possible.
                 try:
                     results_div = soup.find("div", class_=re.compile("search-page-list-header"))
                     num_direct_results = 0
@@ -213,16 +222,23 @@ class ZillowScraper:
                             num_direct_results = int(match.group(1))
                     df['is_direct_result'] = False
                     if num_direct_results > 0 and len(df) >= num_direct_results:
-                        df.loc[:num_direct_results-1, 'is_direct_result'] = True
+                        df.loc[:num_direct_results - 1, 'is_direct_result'] = True
                 except Exception as e:
                     print(f"Error marking direct results: {str(e)}", file=sys.stderr)
                     df['is_direct_result'] = True
 
-                # Clean up the price column (remove non-digit characters)
+                # Clean up the price column: remove any non-digit characters.
                 if 'price' in df.columns:
                     df['price'] = df['price'].apply(
-                        lambda x: re.sub(r'[^\d.]', '', str(x)) if pd.notnull(x) else "N/A"
+                        lambda x: re.sub(r'[^\d.]', '', str(x)) if pd.notnull(x) else None
                     )
+
+                # Convert several columns to numeric types where applicable.
+                numeric_columns = ['price', 'beds', 'baths', 'sqft', 'latitude', 'longitude']
+                for col in numeric_columns:
+                    if col in df.columns:
+                        df[col] = pd.to_numeric(df[col], errors='coerce')
+
             return df
 
         except Exception as e:
@@ -230,6 +246,7 @@ class ZillowScraper:
             return pd.DataFrame()
         finally:
             self.close_driver()
+
 
 def load_last_count():
     if not os.path.exists(LAST_COUNT_FILE):
@@ -246,14 +263,14 @@ def save_last_count(count):
         f.write(str(count))
 
 def format_release_message(new_count, old_count, records):
-    """Formats the release message similar to your example."""
+    """Formats a release message including details of the new listings."""
     lines = []
     lines.append("A new increase in Zillow listings was found.")
     lines.append("")
     lines.append(f"We found {new_count} new listing(s) (old record value: {old_count}).")
     lines.append("")
     for i, rec in enumerate(records, start=1):
-        # Number the listings in reverse order (newest gets the highest number)
+        # Number the listings in reverse order (newest gets the highest number).
         record_number = old_count + new_count - (i - 1)
         address = rec.get('full_address', rec.get('address', 'N/A'))
         price = rec.get('price', 'N/A')
@@ -275,7 +292,7 @@ def main():
 
         print(f"Current count: {current_count}, old count: {old_count}, new listings: {new_listings}", file=sys.stderr)
 
-        # Save the CSV (even if no new listings were found)
+        # Save the CSV file (even if no new listings were found)
         if not df.empty:
             df.to_csv('zillow_properties.csv', index=False)
             print("CSV file 'zillow_properties.csv' generated.")
@@ -292,11 +309,16 @@ def main():
                     fh.write("details<<EOF\n")
                     fh.write(message + "\n")
                     fh.write("EOF\n")
+            else:
+                print("\nRelease Message:\n")
+                print(message)
         else:
             if github_output:
                 with open(github_output, "a") as fh:
                     fh.write("new_data=false\n")
                     fh.write("details=No new listings found.\n")
+            else:
+                print("No new listings found.")
     except Exception as e:
         print(f"Error in main: {e}", file=sys.stderr)
         sys.exit(1)

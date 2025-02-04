@@ -36,7 +36,7 @@ jobs:
 
       - name: Upload CSV Artifact
         # This step uploads the CSV so that other jobs or later steps can access it.
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: zillow_properties_csv
           path: zillow_properties.csv

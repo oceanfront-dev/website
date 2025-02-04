@@ -34,6 +34,13 @@ jobs:
         id: scraper
         run: python .github/scripts/scrape_zillow.py
 
+      - name: Upload CSV Artifact
+        # This step uploads the CSV so that other jobs or later steps can access it.
+        uses: actions/upload-artifact@v3
+        with:
+          name: zillow_properties_csv
+          path: zillow_properties.csv
+
       - name: Commit updated last_count.txt
         if: steps.scraper.outputs.new_data == 'true'
         run: |

@@ -30,7 +30,7 @@ jobs:
           response=$(curl -sSL -H "Authorization: Bearer $GITHUB_TOKEN" \
             https://api.github.com/repos/${{ github.repository }}/releases/latest)
           echo "$response" > latest_release.json
-          # Debug: Uncomment the next line to see the entire JSON response in the logs.
+          # Uncomment the next line for debugging:
           # cat latest_release.json
           body=$(echo "$response" | python -c "import sys, json; obj=json.load(sys.stdin); print(obj.get('body',''))")
           tag_name=$(echo "$response" | python -c "import sys, json; obj=json.load(sys.stdin); print(obj.get('tag_name',''))")
@@ -63,7 +63,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          # Write the release body to a file to use as input.
+          # Write the release body to a file for processing.
           echo "${{ steps.fetch_release.outputs.release_body }}" > release_body.txt
           python .github/scripts/zillow_to_text.py release_body.txt > z2t_output.txt
           echo "analysis<<EOF" >> "$GITHUB_OUTPUT"
@@ -85,7 +85,8 @@ jobs:
       - name: Update GitHub Pages Analysis File
         if: steps.check_zillow.outputs.is_zillow == 'true'
         run: |
-          # Write the AI analysis output to a file that your GitHub Pages site uses.
+          # Ensure the _includes directory exists.
+          mkdir -p _includes
           echo "${{ steps.z2t.outputs.analysis }}" > _includes/analysis.md
           git config user.name "github-actions"
           git config user.email "actions@github.com"

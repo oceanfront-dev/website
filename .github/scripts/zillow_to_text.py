@@ -13,7 +13,7 @@ except ImportError:
     logging.error("Error: The 'openai' library (or your custom O1-mini package) is missing.")
     sys.exit(1)
 
-# Set up logging for debugging
+# Set up basic debugging logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s")
 
 # Get the OpenAI API key from the environment
@@ -45,11 +45,29 @@ def extract_urls(body: str):
     logging.debug(f"Extracted URLs: {urls}")
     return urls
 
+def extract_metadata(html_text: str) -> str:
+    """
+    Extract metadata elements from the HTML:
+      - The <title> text
+      - The content of <meta property="zillow_fb:description">
+    Returns a string combining these two elements.
+    """
+    soup = BeautifulSoup(html_text, "html.parser")
+    title = soup.title.text.strip() if soup.title and soup.title.text else ""
+    meta_desc = ""
+    meta_tag = soup.find("meta", property="zillow_fb:description")
+    if meta_tag and meta_tag.get("content"):
+        meta_desc = meta_tag["content"].strip()
+    combined = f"Title: {title}\nMeta Description: {meta_desc}"
+    return combined
+
 def fetch_page_text(url: str) -> str:
     """
     Fetch the Zillow page at the given URL using robust headers.
     If the requests method returns a 403, fall back to Selenium.
-    In the Selenium fallback, first visit the MAIN_SEARCH_URL and wait, then navigate to the detail URL.
+    In the Selenium fallback, first visit the MAIN_SEARCH_URL and wait,
+    then navigate to the detail URL to simulate a natural click.
+    Extract metadata (title and meta description) from the page.
     """
     headers = {
         "User-Agent": (
@@ -67,13 +85,12 @@ def fetch_page_text(url: str) -> str:
             logging.debug(f"Requests method returned 403 for URL: {url}")
             raise Exception("403 Forbidden encountered with requests")
         response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser")
-        text = " ".join(soup.stripped_strings)
-        logging.debug("Successfully fetched page text using requests.")
-        return text
+        metadata = extract_metadata(response.text)
+        logging.debug("Successfully fetched metadata using requests.")
+        return metadata
     except Exception as e:
         logging.debug(f"Requests method failed for {url} with error: {e}")
-        # Fallback to Selenium
+        # Fallback: Use Selenium
         try:
             from selenium import webdriver
             from selenium.webdriver.chrome.options import Options
@@ -95,7 +112,7 @@ def fetch_page_text(url: str) -> str:
             service = Service(ChromeDriverManager().install())
             driver = webdriver.Chrome(service=service, options=options)
             
-            # First, visit the main search URL to simulate natural browsing.
+            # First, navigate to the main search URL to simulate natural browsing.
             logging.debug(f"Navigating to MAIN_SEARCH_URL: {MAIN_SEARCH_URL}")
             driver.get(MAIN_SEARCH_URL)
             time.sleep(5)  # Wait for 5 seconds
@@ -103,30 +120,31 @@ def fetch_page_text(url: str) -> str:
             # Then, navigate to the detail URL.
             logging.debug(f"Navigating to detail URL: {url}")
             driver.get(url)
-            time.sleep(5)  # Wait again to simulate a natural click delay
+            time.sleep(5)  # Wait for 5 seconds to simulate a natural click delay
             
-            # Extract the full text of the page.
-            page_text = driver.find_element(By.TAG_NAME, "body").text
+            # Get the page source and extract metadata.
+            page_source = driver.page_source
+            metadata = extract_metadata(page_source)
             driver.quit()
-            logging.debug("Successfully fetched page text using Selenium.")
-            return page_text
+            logging.debug("Successfully fetched metadata using Selenium.")
+            return metadata
         except Exception as se:
             logging.error(f"Selenium method also failed for URL {url}: {se}")
             return f"Error fetching URL {url} using both methods: {e}; Selenium error: {se}"
 
 def generate_prompt(page_text: str) -> str:
     """
-    Construct a prompt instructing the model to return a property grade
-    on the first line and an exactly 50-word description on the second line.
+    Construct a prompt instructing the model to return a property grade on the first line
+    and an exactly 50-word description on the second line, using the provided metadata.
     """
     prompt = (
-        "You are a real estate evaluator. Analyze the following property information and respond in exactly two lines, with no additional commentary:\n\n"
+        "You are a real estate evaluator. Analyze the following property metadata and respond in exactly two lines, with no additional commentary:\n\n"
         "1. The first line must contain only the property grade (e.g., A, B, C, or a numeric score).\n"
         "2. The second line must contain a property description that is exactly 50 words long, summarizing the property's key features.\n\n"
         "Use this exact format:\n"
         "Grade: <grade>\n"
         "Description: <50-word description>\n\n"
-        "Property Information:\n"
+        "Property Metadata:\n"
         f"{page_text}\n\n"
         "Ensure that the description is exactly 50 words and nothing else is added."
     )
@@ -135,12 +153,12 @@ def generate_prompt(page_text: str) -> str:
 
 def get_analysis_for_url(url: str) -> str:
     """
-    For a given property URL, fetch the page text, build a prompt,
+    For a given property URL, fetch the page metadata, build a prompt,
     and call the OpenAI API to generate the analysis.
     """
     logging.debug(f"Starting analysis for URL: {url}")
-    page_text = fetch_page_text(url)
-    prompt = generate_prompt(page_text)
+    metadata = fetch_page_text(url)
+    prompt = generate_prompt(metadata)
     try:
         resp = client.chat.completions.create(
             model="o1-mini",

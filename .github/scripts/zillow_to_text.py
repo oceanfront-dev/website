@@ -2,12 +2,9 @@
 import os
 import re
 import sys
+import logging
 import requests
 from bs4 import BeautifulSoup
-
-# For debugging output
-import logging
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s")
 
 try:
     from openai import OpenAI
@@ -15,13 +12,16 @@ except ImportError:
     logging.error("Error: The 'openai' library (or your custom O1-mini package) is missing.")
     sys.exit(1)
 
+# Set up basic debugging logging
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s")
+
 # Get the OpenAI API key from the environment
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 if not OPENAI_API_KEY:
     logging.error("Error: OPENAI_API_KEY is missing.")
     sys.exit(1)
 
-# Initialize the client using your custom interface (as in ct_to_text.py)
+# Initialize the OpenAI client using your custom interface (as in ct_to_text.py)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Regex to extract detail URLs from the release body
@@ -39,8 +39,9 @@ def extract_urls(body: str):
 
 def fetch_page_text(url: str) -> str:
     """
-    Fetch the Zillow page at the given URL using robust headers.  
-    If the requests method returns a 403 or fails, fall back to Selenium.
+    Fetch the Zillow page at the given URL using human-like request headers.
+    If the requests method returns a 403, fall back to Selenium and simulate
+    a human clicking a verification button (e.g., a "I am not a robot" button).
     """
     headers = {
         "User-Agent": (
@@ -54,7 +55,6 @@ def fetch_page_text(url: str) -> str:
     try:
         logging.debug(f"Attempting to fetch URL using requests: {url}")
         response = requests.get(url, headers=headers, timeout=30)
-        # If we detect a 403 status or indication of a forbidden access in the text, trigger fallback
         if response.status_code == 403 or "403 Forbidden" in response.text:
             logging.debug(f"Requests method returned 403 for URL: {url}")
             raise Exception("403 Forbidden encountered with requests")
@@ -65,15 +65,19 @@ def fetch_page_text(url: str) -> str:
         return text
     except Exception as e:
         logging.debug(f"Requests method failed for {url} with error: {e}")
-        # Fallback to Selenium
+        # Fallback: Use Selenium to mimic human behavior.
         try:
             from selenium import webdriver
             from selenium.webdriver.chrome.options import Options
-            # Optionally, you can use webdriver-manager to automatically manage chromedriver
+            from selenium.webdriver.common.action_chains import ActionChains
+            from selenium.webdriver.common.by import By
+            from selenium.webdriver.support.ui import WebDriverWait
+            from selenium.webdriver.support import expected_conditions as EC
             from webdriver_manager.chrome import ChromeDriverManager
         except ImportError as ie:
             logging.error("Selenium or webdriver_manager not available.")
             return f"Error: Selenium not available. Original error: {e}"
+
         try:
             logging.debug("Initializing Selenium WebDriver.")
             options = Options()
@@ -81,11 +85,33 @@ def fetch_page_text(url: str) -> str:
             options.add_argument("--disable-gpu")
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
-            # If webdriver-manager is available, use it to install ChromeDriver
+            # Initialize the driver with ChromeDriverManager
             driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
             driver.get(url)
-            # Wait a moment if needed (could add explicit waits here)
-            page_text = driver.find_element("tag name", "body").text
+
+            # Wait briefly for the page to load.
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.TAG_NAME, "body"))
+            )
+
+            # Attempt to find and click the verification button if it exists.
+            try:
+                # Adjust the XPath below to match the actual verification button.
+                verification_button = WebDriverWait(driver, 5).until(
+                    EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'I am not a robot')]"))
+                )
+                logging.debug("Verification button found; simulating human click-and-hold.")
+                actions = ActionChains(driver)
+                actions.click_and_hold(verification_button).pause(3).release().perform()
+                # Wait a few seconds for the page to update after clicking.
+                WebDriverWait(driver, 5).until(
+                    EC.invisibility_of_element(verification_button)
+                )
+            except Exception as ve:
+                logging.debug(f"No verification button found or error clicking it: {ve}")
+
+            # After handling the verification, get the page text.
+            page_text = driver.find_element(By.TAG_NAME, "body").text
             driver.quit()
             logging.debug("Successfully fetched page text using Selenium.")
             return page_text
@@ -107,7 +133,7 @@ def generate_prompt(page_text: str) -> str:
         "Grade: <grade>\n"
         "Description: <50-word description>"
     )
-    logging.debug(f"Generated prompt: {prompt[:200]}...")  # log first 200 chars
+    logging.debug(f"Generated prompt (first 200 chars): {prompt[:200]}...")
     return prompt
 
 def get_analysis_for_url(url: str) -> str:

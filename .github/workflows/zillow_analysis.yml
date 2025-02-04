@@ -24,21 +24,23 @@ jobs:
       - name: Fetch Latest Release
         id: fetch_release
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Fetching the latest release..."
           response=$(curl -sSL -H "Authorization: Bearer $GITHUB_TOKEN" \
             https://api.github.com/repos/${{ github.repository }}/releases/latest)
           echo "$response" > latest_release.json
-          body=$(echo "$response" | python -c "import sys, json; print(json.load(sys.stdin)['body'])")
-          tag_name=$(echo "$response" | python -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
+          # Debug: Uncomment the next line to see the entire JSON response in the logs.
+          # cat latest_release.json
+          body=$(echo "$response" | python -c "import sys, json; obj=json.load(sys.stdin); print(obj.get('body',''))")
+          tag_name=$(echo "$response" | python -c "import sys, json; obj=json.load(sys.stdin); print(obj.get('tag_name',''))")
           echo "Found release tag_name=$tag_name"
           echo "release_body<<EOF" >> "$GITHUB_OUTPUT"
           echo "$body" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
           echo "release_tag=$tag_name" >> "$GITHUB_OUTPUT"
 
-      - name: Check if zillow-updates release
+      - name: Check if release is Zillow update
         id: check_zillow
         run: |
           TAG_NAME="${{ steps.fetch_release.outputs.release_tag }}"
@@ -55,12 +57,13 @@ jobs:
           TS=$(date +'%Y-%m-%d_%H-%M-%S')
           echo "timestamp=$TS" >> "$GITHUB_OUTPUT"
 
-      - name: Run Zillow to Text
+      - name: Run Zillow to Text Analysis
         id: z2t
         if: steps.check_zillow.outputs.is_zillow == 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
+          # Write the release body to a file to use as input.
           echo "${{ steps.fetch_release.outputs.release_body }}" > release_body.txt
           python .github/scripts/zillow_to_text.py release_body.txt > z2t_output.txt
           echo "analysis<<EOF" >> "$GITHUB_OUTPUT"
@@ -71,7 +74,7 @@ jobs:
         if: steps.check_zillow.outputs.is_zillow == 'true'
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "zillow-analysis-${{ steps.gen_ts.outputs.timestamp }}"
           release_name: "Zillow Analysis #${{ steps.gen_ts.outputs.timestamp }}"
@@ -79,10 +82,10 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Update GitHub Pages Content
+      - name: Update GitHub Pages Analysis File
         if: steps.check_zillow.outputs.is_zillow == 'true'
         run: |
-          # Write the analysis output to a file that will be included in the Jekyll site.
+          # Write the AI analysis output to a file that your GitHub Pages site uses.
           echo "${{ steps.z2t.outputs.analysis }}" > _includes/analysis.md
           git config user.name "github-actions"
           git config user.email "actions@github.com"

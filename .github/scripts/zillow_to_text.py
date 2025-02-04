@@ -4,6 +4,7 @@ import re
 import sys
 import logging
 import requests
+import time
 from bs4 import BeautifulSoup
 
 try:
@@ -27,6 +28,13 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 # Regex to extract detail URLs from the release body
 RE_DETAIL_URL = re.compile(r"Detail URL:\s*(\S+)", re.IGNORECASE)
 
+# This is the working search URL from your first workflow.
+MAIN_SEARCH_URL = (
+    "https://www.zillow.com/juno-beach-fl/?searchQueryState=%7B%22regionSelection%22%3A%5B%7B"
+    "%22regionId%22%3A39182%2C%22regionType%22%3A8%7D%5D%2C%22filterState%22%3A%7B%22doz%22%3A"
+    "%7B%22value%22%3A%221%22%7D%2C%22sort%22%3A%7B%22value%22%3A%22days%22%7D%7D%7D"
+)
+
 def extract_urls(body: str):
     """
     Parse the release body and return a list of detail URLs.
@@ -39,9 +47,10 @@ def extract_urls(body: str):
 
 def fetch_page_text(url: str) -> str:
     """
-    Fetch the Zillow page at the given URL using human-like request headers.
-    If the requests method returns a 403, fall back to Selenium and simulate
-    a human clicking a verification button (e.g., a "I am not a robot" button).
+    Fetch the Zillow page at the given URL using robust headers.
+    If the requests method returns a 403, fall back to Selenium.
+    In the Selenium fallback, first visit the MAIN_SEARCH_URL, wait a few seconds,
+    then navigate to the property detail URL to simulate a natural click.
     """
     headers = {
         "User-Agent": (
@@ -69,7 +78,7 @@ def fetch_page_text(url: str) -> str:
         try:
             from selenium import webdriver
             from selenium.webdriver.chrome.options import Options
-            from selenium.webdriver.common.action_chains import ActionChains
+            from selenium.webdriver.chrome.service import Service
             from selenium.webdriver.common.by import By
             from selenium.webdriver.support.ui import WebDriverWait
             from selenium.webdriver.support import expected_conditions as EC
@@ -77,40 +86,40 @@ def fetch_page_text(url: str) -> str:
         except ImportError as ie:
             logging.error("Selenium or webdriver_manager not available.")
             return f"Error: Selenium not available. Original error: {e}"
-
         try:
-            logging.debug("Initializing Selenium WebDriver.")
+            logging.debug("Initializing Selenium WebDriver using Service.")
             options = Options()
             options.add_argument("--headless")
             options.add_argument("--disable-gpu")
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
-            # Initialize the driver with ChromeDriverManager
-            driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=options)
+            
+            # First, navigate to the working search page.
+            logging.debug(f"Navigating to MAIN_SEARCH_URL: {MAIN_SEARCH_URL}")
+            driver.get(MAIN_SEARCH_URL)
+            time.sleep(5)  # wait 5 seconds to simulate natural browsing
+
+            # Now, navigate to the property detail URL.
+            logging.debug(f"Navigating to detail URL: {url}")
             driver.get(url)
+            time.sleep(5)  # wait again to simulate natural click delay
 
-            # Wait briefly for the page to load.
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.TAG_NAME, "body"))
-            )
+            # Optionally, if there is any verification or overlay, you could try clicking it here.
+            # For example, you might check for a verification button and click it.
+            # (This code block is left commented as an example.)
+            #
+            # try:
+            #     verification_button = WebDriverWait(driver, 5).until(
+            #         EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'I am not a robot')]"))
+            #     )
+            #     logging.debug("Verification button found; simulating click.")
+            #     verification_button.click()
+            #     time.sleep(3)
+            # except Exception as ve:
+            #     logging.debug(f"No verification button found or error clicking it: {ve}")
 
-            # Attempt to find and click the verification button if it exists.
-            try:
-                # Adjust the XPath below to match the actual verification button.
-                verification_button = WebDriverWait(driver, 5).until(
-                    EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'I am not a robot')]"))
-                )
-                logging.debug("Verification button found; simulating human click-and-hold.")
-                actions = ActionChains(driver)
-                actions.click_and_hold(verification_button).pause(3).release().perform()
-                # Wait a few seconds for the page to update after clicking.
-                WebDriverWait(driver, 5).until(
-                    EC.invisibility_of_element(verification_button)
-                )
-            except Exception as ve:
-                logging.debug(f"No verification button found or error clicking it: {ve}")
-
-            # After handling the verification, get the page text.
             page_text = driver.find_element(By.TAG_NAME, "body").text
             driver.quit()
             logging.debug("Successfully fetched page text using Selenium.")

@@ -5,19 +5,23 @@ import sys
 import requests
 from bs4 import BeautifulSoup
 
+# For debugging output
+import logging
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s")
+
 try:
     from openai import OpenAI
 except ImportError:
-    print("Error: The 'openai' library (or your custom O1-mini package) is missing.")
+    logging.error("Error: The 'openai' library (or your custom O1-mini package) is missing.")
     sys.exit(1)
 
 # Get the OpenAI API key from the environment
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 if not OPENAI_API_KEY:
-    print("Error: OPENAI_API_KEY is missing.", file=sys.stderr)
+    logging.error("Error: OPENAI_API_KEY is missing.")
     sys.exit(1)
 
-# Initialize the client (using the same style as your ct_to_text.py script)
+# Initialize the client using your custom interface (as in ct_to_text.py)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Regex to extract detail URLs from the release body
@@ -25,16 +29,18 @@ RE_DETAIL_URL = re.compile(r"Detail URL:\s*(\S+)", re.IGNORECASE)
 
 def extract_urls(body: str):
     """
-    Parses the release body and returns a list of detail URLs.
-    Expected format:
+    Parse the release body and return a list of detail URLs.
+    Expected format in the release body:
       Detail URL: https://www.zillow.com/homedetails/...
     """
-    return RE_DETAIL_URL.findall(body)
+    urls = RE_DETAIL_URL.findall(body)
+    logging.debug(f"Extracted URLs: {urls}")
+    return urls
 
 def fetch_page_text(url: str) -> str:
     """
-    Fetches the Zillow page at the given URL using robust headers
-    (similar to the first workflow) and extracts visible text.
+    Fetch the Zillow page at the given URL using robust headers.  
+    If the requests method returns a 403 or fails, fall back to Selenium.
     """
     headers = {
         "User-Agent": (
@@ -46,18 +52,50 @@ def fetch_page_text(url: str) -> str:
         "Accept-Language": "en-US,en;q=0.9"
     }
     try:
+        logging.debug(f"Attempting to fetch URL using requests: {url}")
         response = requests.get(url, headers=headers, timeout=30)
+        # If we detect a 403 status or indication of a forbidden access in the text, trigger fallback
+        if response.status_code == 403 or "403 Forbidden" in response.text:
+            logging.debug(f"Requests method returned 403 for URL: {url}")
+            raise Exception("403 Forbidden encountered with requests")
         response.raise_for_status()
-        # Use BeautifulSoup to extract all visible text
         soup = BeautifulSoup(response.text, "html.parser")
         text = " ".join(soup.stripped_strings)
+        logging.debug("Successfully fetched page text using requests.")
         return text
     except Exception as e:
-        return f"Error fetching URL {url}: {e}"
+        logging.debug(f"Requests method failed for {url} with error: {e}")
+        # Fallback to Selenium
+        try:
+            from selenium import webdriver
+            from selenium.webdriver.chrome.options import Options
+            # Optionally, you can use webdriver-manager to automatically manage chromedriver
+            from webdriver_manager.chrome import ChromeDriverManager
+        except ImportError as ie:
+            logging.error("Selenium or webdriver_manager not available.")
+            return f"Error: Selenium not available. Original error: {e}"
+        try:
+            logging.debug("Initializing Selenium WebDriver.")
+            options = Options()
+            options.add_argument("--headless")
+            options.add_argument("--disable-gpu")
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            # If webdriver-manager is available, use it to install ChromeDriver
+            driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+            driver.get(url)
+            # Wait a moment if needed (could add explicit waits here)
+            page_text = driver.find_element("tag name", "body").text
+            driver.quit()
+            logging.debug("Successfully fetched page text using Selenium.")
+            return page_text
+        except Exception as se:
+            logging.error(f"Selenium method also failed for URL {url}: {se}")
+            return f"Error fetching URL {url} using both methods: {e}; Selenium error: {se}"
 
 def generate_prompt(page_text: str) -> str:
     """
-    Constructs a prompt instructing the model to return a property grade
+    Construct a prompt instructing the model to return a property grade
     and an exactly 50-word description.
     """
     prompt = (
@@ -69,6 +107,7 @@ def generate_prompt(page_text: str) -> str:
         "Grade: <grade>\n"
         "Description: <50-word description>"
     )
+    logging.debug(f"Generated prompt: {prompt[:200]}...")  # log first 200 chars
     return prompt
 
 def get_analysis_for_url(url: str) -> str:
@@ -76,16 +115,19 @@ def get_analysis_for_url(url: str) -> str:
     For a given property URL, fetch the page text, build a prompt,
     and call the OpenAI API to generate the analysis.
     """
+    logging.debug(f"Starting analysis for URL: {url}")
     page_text = fetch_page_text(url)
     prompt = generate_prompt(page_text)
     try:
-        # Call the API using the same interface as in ct_to_text.py
         resp = client.chat.completions.create(
             model="o1-mini",
             messages=[{"role": "user", "content": prompt}]
         )
-        return resp.choices[0].message.content.strip()
+        analysis = resp.choices[0].message.content.strip()
+        logging.debug(f"Received analysis for URL: {url}")
+        return analysis
     except Exception as e:
+        logging.error(f"Error calling OpenAI API for URL {url}: {e}")
         return f"Error calling OpenAI API for URL {url}: {e}"
 
 def main():

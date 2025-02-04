@@ -1,0 +1,91 @@
+name: Zillow Analysis
+
+on:
+  workflow_run:
+    workflows: ["Scrape Zillow Listings"]
+    types: [completed]
+
+jobs:
+  zillow_analysis_job:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install Dependencies
+        run: pip install requests beautifulsoup4 openai
+
+      - name: Fetch Latest Release
+        id: fetch_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        run: |
+          echo "Fetching the latest release..."
+          response=$(curl -sSL -H "Authorization: Bearer $GITHUB_TOKEN" \
+            https://api.github.com/repos/${{ github.repository }}/releases/latest)
+          echo "$response" > latest_release.json
+          body=$(echo "$response" | python -c "import sys, json; print(json.load(sys.stdin)['body'])")
+          tag_name=$(echo "$response" | python -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
+          echo "Found release tag_name=$tag_name"
+          echo "release_body<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$body" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "release_tag=$tag_name" >> "$GITHUB_OUTPUT"
+
+      - name: Check if zillow-updates release
+        id: check_zillow
+        run: |
+          TAG_NAME="${{ steps.fetch_release.outputs.release_tag }}"
+          if [[ "$TAG_NAME" == zillow-updates-* ]]; then
+            echo "is_zillow=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_zillow=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate Timestamp
+        id: gen_ts
+        if: steps.check_zillow.outputs.is_zillow == 'true'
+        run: |
+          TS=$(date +'%Y-%m-%d_%H-%M-%S')
+          echo "timestamp=$TS" >> "$GITHUB_OUTPUT"
+
+      - name: Run Zillow to Text
+        id: z2t
+        if: steps.check_zillow.outputs.is_zillow == 'true'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          echo "${{ steps.fetch_release.outputs.release_body }}" > release_body.txt
+          python .github/scripts/zillow_to_text.py release_body.txt > z2t_output.txt
+          echo "analysis<<EOF" >> "$GITHUB_OUTPUT"
+          cat z2t_output.txt >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Create or Update Release with AI Summary
+        if: steps.check_zillow.outputs.is_zillow == 'true'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        with:
+          tag_name: "zillow-analysis-${{ steps.gen_ts.outputs.timestamp }}"
+          release_name: "Zillow Analysis #${{ steps.gen_ts.outputs.timestamp }}"
+          body: ${{ steps.z2t.outputs.analysis }}
+          draft: false
+          prerelease: false
+
+      - name: Update GitHub Pages Content
+        if: steps.check_zillow.outputs.is_zillow == 'true'
+        run: |
+          # Write the analysis output to a file that will be included in the Jekyll site.
+          echo "${{ steps.z2t.outputs.analysis }}" > _includes/analysis.md
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add _includes/analysis.md
+          git commit -m "Update analysis.md with latest Zillow analysis"
+          git push

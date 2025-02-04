@@ -20,10 +20,12 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 def generate_summary_for_property(row):
     """
-    Given a pandas Series (a property row from the CSV), builds a prompt
-    and calls the OpenAI API to generate a 75-word summary and grade.
+    Given a property row from the CSV, build a prompt and call the OpenAI API
+    to generate a 75-word summary and grade. The response is expected in the format:
+      Summary: <your summary here>
+      Grade: <your grade here>
+    This function parses that output and returns (summary, grade).
     """
-    # Use N/A for missing values.
     price = row.get("price", "N/A")
     url = row.get("url", "N/A")
     last_updated = row.get("last_updated", "N/A")
@@ -33,7 +35,6 @@ def generate_summary_for_property(row):
     property_type = row.get("type", "N/A")
     listing_company = row.get("listing_company", "N/A")
     
-    # Build the prompt.
     prompt = (
         "You are a real estate analyst. Below are details for one property:\n"
         f"Price: {price}\n"
@@ -45,7 +46,7 @@ def generate_summary_for_property(row):
         f"Type: {property_type}\n"
         f"Listing Company: {listing_company}\n\n"
         "Generate a concise summary of approximately 75 words describing the property, "
-        "highlighting its key features, and assign a grade (for example, 95%, 75%, or 85%) based on its overall appeal, price, and location of the listing. "
+        "highlighting its key features, and assign a grade (for example, 60%, 75%, or 95%) based on its overall appeal and demand for houses of that type. "
         "Return your answer in the following format:\n"
         "Summary: <your summary here>\n"
         "Grade: <your grade here>"
@@ -57,35 +58,83 @@ def generate_summary_for_property(row):
             messages=[{"role": "user", "content": prompt}]
         )
         result = response.choices[0].message.content.strip()
-        return result
+        # Parse the result to separate the summary and grade.
+        summary = "N/A"
+        grade = "N/A"
+        for line in result.splitlines():
+            if line.lower().startswith("summary:"):
+                summary = line[len("summary:"):].strip()
+            elif line.lower().startswith("grade:"):
+                grade = line[len("grade:"):].strip()
+        return summary, grade
     except Exception as e:
-        return f"Error generating summary: {e}"
+        return f"Error generating summary: {e}", "N/A"
 
 def main():
-    # Verify that the CSV file exists.
     csv_path = "zillow_properties.csv"
     if not os.path.isfile(csv_path):
         print("Error: zillow_properties.csv not found.")
         sys.exit(1)
     
-    # Read the CSV into a pandas DataFrame.
     try:
         df = pd.read_csv(csv_path)
     except Exception as e:
         print(f"Error reading CSV file: {e}")
         sys.exit(1)
     
-    # Build summaries for each property.
     results = []
+
+    # Create a header with inline CSS for a Zillow-like clean card layout.
+    header = """
+<style>
+.property-card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #fff;
+}
+.property-card h2 {
+  margin-top: 0;
+  font-size: 1.5em;
+  color: #2a9d8f;
+}
+.property-card p {
+  margin: 8px 0;
+  line-height: 1.5;
+  font-family: Arial, sans-serif;
+}
+.property-card a {
+  color: #264653;
+  text-decoration: none;
+  font-weight: bold;
+}
+</style>
+
+# Property Listings Analysis
+
+"""
+    results.append(header)
+    
+    # Process each property row.
     for index, row in df.iterrows():
-        summary = generate_summary_for_property(row)
-        # You can include an identifier for each property if desired.
-        results.append(f"Property {index + 1}:\n{summary}\n")
+        summary, grade = generate_summary_for_property(row)
+        price = row.get("price", "N/A")
+        url = row.get("url", "N/A")
+        
+        # Format each property as a "card" in HTML within markdown.
+        card = f"""
+<div class="property-card">
+  <h2>Price: ${price}</h2>
+  <p><strong>Summary:</strong> {summary}</p>
+  <p><strong>Grade:</strong> {grade}</p>
+  <p><a href="{url}" target="_blank">View Listing</a></p>
+</div>
+"""
+        results.append(card)
     
-    # Combine all summaries.
     final_output = "\n".join(results)
-    
-    # Write the final output to a file (which your workflow will commit and release).
     output_path = "_includes/analysis.md"
     try:
         with open(output_path, "w", encoding="utf-8") as f:

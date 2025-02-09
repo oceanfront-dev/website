@@ -29,71 +29,67 @@
 
 
 <div class="property-card">
-  <h2>Price: $323000</h2>
+  <h2>Price: $359900</h2>
   <p><strong>Summary:</strong> **  
-Discover the epitome of coastal elegance at 14661 US Highway 1, Lot 22, Juno Beach. Priced attractively at $323,000, this charming 2-bedroom, 2-bathroom residence spans 1,102 square feet of thoughtfully designed living space. Nestled in the heart of Juno Beach, this property boasts seamless indoor-outdoor living with expansive windows that flood the home with natural light and offer serene views of the lush surroundings. The modern kitchen features high-end finishes and open to a spacious living area, perfect for both relaxing and entertaining. Step outside to a beautifully landscaped yard, ideal for enjoying Florida’s sunny climate or hosting intimate gatherings. Located just minutes from pristine beaches, upscale dining, and vibrant cultural spots, this home offers a coveted lifestyle of luxury and tranquility. Presented by DONOHUE REAL ESTATE, LLC, this property is a rare find in a highly sought-after market, promising both comfort and exclusivity.
+Experience the epitome of coastal elegance at 700 Uno Lago Dr APT 402 in the coveted Juno Beach enclave. This stunning 2-bedroom, 2-bathroom condo spans 1,180 square feet, showcasing contemporary architectural brilliance with expansive floor-to-ceiling windows that frame breathtaking lagoon and ocean vistas. The open-concept living area is adorned with sleek hardwood flooring and designer finishes, seamlessly connecting to a gourmet kitchen equipped with high-end stainless steel appliances, quartz countertops, and custom cabinetry—perfect for culinary enthusiasts and entertaining guests. The master suite offers a tranquil retreat with its spacious layout, luxurious ensuite bath, and ample natural light. Residents enjoy exclusive access to premium amenities, including a state-of-the-art fitness center, sparkling swimming pool, and beautifully landscaped communal spaces. Nestled in a prime location, this condo provides unparalleled access to pristine beaches, upscale dining, boutique shopping, and vibrant cultural hotspots, embodying a lifestyle of sophistication and serenity. Listed by COMPASS FLORIDA LLC for $359,900, this property stands as a rare gem in the luxury market.
 
 **</p>
-  <p><strong>Uniqueness Score:</strong> ** 78%</p>
+  <p><strong>Uniqueness Score:</strong> ** 87%</p>
+  <p><a href="https://www.zillow.com/homedetails/700-Uno-Lago-Dr-APT-402-Juno-Beach-FL-33408/46802109_zpid/" target="_blank">View Listing</a></p>
+</div>
+
+
+<div class="property-card">
+  <h2>Price: $323000</h2>
+  <p><strong>Summary:</strong> **  
+Discover your private sanctuary at 14661 US Highway 1 in the prestigious Juno Beach, FL. This charming 2-bedroom, 2-bath residence spans 1,102 square feet, seamlessly blending modern elegance with coastal charm. Step inside to find a bright, open floor plan adorned with high-end finishes and abundant natural light. The gourmet kitchen boasts sleek countertops and state-of-the-art appliances, perfect for entertaining. Retreat to the serene master suite, complete with a luxurious ensuite bathroom. Outside, enjoy the expansive extra-large carport and beautifully landscaped surroundings, offering both convenience and tranquility. Located just moments from pristine beaches, upscale dining, and exclusive shopping, this home epitomizes the quintessential Florida lifestyle. Whether you’re seeking a peaceful retreat or a vibrant community ambiance, this property delivers unparalleled comfort and sophistication. Presented by DONOHUE REAL ESTATE, LLC, this gem is a rare find in one of South Florida’s most desirable locales.
+
+**</p>
+  <p><strong>Uniqueness Score:</strong> **  
+87%</p>
   <p><a href="https://www.zillow.com/homedetails/14661-Us-Highway-1-LOT-22-Juno-Beach-FL-33408/46800155_zpid/" target="_blank">View Listing</a></p>
 </div>
 
 
 <div class="property-card">
-  <h2>Price: $768500</h2>
+  <h2>Price: $625000</h2>
   <p><strong>Summary:</strong> **  
-Welcome to 409 Kelsey Park Dr, an exquisite sanctuary nestled in the heart of Palm Beach Gardens. This stunning 3-bedroom, 3-bath residence spans 1,826 square feet, seamlessly blending modern elegance with timeless charm. The open-concept living spaces are adorned with high ceilings and expansive windows that flood the home with natural light, highlighting the bespoke hardwood floors and sophisticated finishes. The gourmet kitchen boasts top-of-the-line stainless steel appliances, granite countertops, and a spacious island perfect for culinary creations and entertaining guests. Retreat to the luxurious master suite, featuring a spa-like ensuite bathroom and a private balcony offering serene views of the meticulously landscaped gardens. Outdoor living is elevated with a pristine pool, covered patio, and lush greenery, creating a perfect oasis for relaxation and entertaining. Located in a prestigious community with easy access to premier dining, shopping, and recreation, this property epitomizes the ultimate Florida lifestyle. Experience unparalleled luxury and exclusivity with PREMIER PROPERTIES OF SOUTH FL.
+Discover unparalleled elegance in this stunning 2-bedroom, 2-bath condo at 356 Golfview Rd, APT 903, nestled in the coveted North Palm Beach enclave. Priced at $625,000, this 1,368-square-foot residence exudes modern sophistication with its sleek architectural lines, expansive floor-to-ceiling windows, and open-concept living spaces that bathe the home in natural light. The gourmet kitchen is a chef’s dream, featuring high-end stainless steel appliances, quartz countertops, and custom cabinetry. Step out onto your private balcony to enjoy serene golf course views and vibrant Florida sunsets, epitomizing the ultimate luxury lifestyle. Residents benefit from exclusive access to premium amenities, including a state-of-the-art fitness center, sparkling pool, and meticulously landscaped gardens. Perfectly situated close to upscale shopping, fine dining, and pristine beaches, this condo offers both tranquility and convenience. Presented by WILLIAM RAVEIS PALM BEACH LLC, this property is a rare gem in a distinguished community.
 
 **</p>
-  <p><strong>Uniqueness Score:</strong> ** 78%</p>
-  <p><a href="https://www.zillow.com/homedetails/409-Kelsey-Park-Dr-Palm-Beach-Gardens-FL-33410/46864905_zpid/" target="_blank">View Listing</a></p>
+  <p><strong>Uniqueness Score:</strong> ** 82%</p>
+  <p><a href="https://www.zillow.com/homedetails/356-Golfview-Rd-APT-903-North-Palm-Beach-FL-33408/46887098_zpid/" target="_blank">View Listing</a></p>
 </div>
 
 
 <div class="property-card">
-  <h2>Price: $548900</h2>
+  <h2>Price: $825000</h2>
   <p><strong>Summary:</strong> **  
-Discover unparalleled coastal elegance at 77 Uno Lago Dr in the coveted Juno Beach, FL. This exquisite 2-bedroom, 3-bath residence spans 1,494 square feet, seamlessly blending modern sophistication with classic charm. Architectural highlights include expansive floor-to-ceiling windows that invite abundant natural light and showcase picturesque waterway views. The open-concept living area features a gourmet kitchen equipped with top-of-the-line stainless steel appliances, sleek countertops, and a stylish island, perfect for both casual dining and entertaining guests. Luxurious bedrooms offer serene retreats, complemented by spa-inspired bathrooms with premium fixtures and finishes. Step outside to a meticulously landscaped backyard oasis, ideal for relaxing under the Florida sun or hosting elegant soirées. Situated just minutes from pristine beaches, upscale dining, and exclusive boutiques, this home provides a lifestyle of refined tranquility and convenience. Listed by LUBECK REALTY GROUP INC, 77 Uno Lago Dr stands as a distinctive gem in the Juno Beach market, offering unmatched luxury and exclusivity.
+Discover unparalleled luxury in this exquisite penthouse condominium at 122 Lakeshore Drive, nestled in the prestigious North Palm Beach community. Priced at $825,000, this stunning 2-bedroom, 2-bath residence spans 1,656 square feet of meticulously designed living space. Floor-to-ceiling windows flood the open-plan layout with natural light, showcasing breathtaking panoramic views of the serene lakeshore and vibrant cityscape. The gourmet kitchen boasts high-end stainless steel appliances, sleek granite countertops, and elegant cabinetry, perfect for entertaining. Retreat to the spacious master suite, featuring a spa-like ensuite and private balcony, ideal for unwinding at sunset. Exclusive amenities include a state-of-the-art fitness center, sparkling pool, and secure parking. Situated in a prime location, residents enjoy easy access to upscale dining, shopping, and recreational activities, embodying the epitome of sophisticated waterfront living. Experience a lifestyle of elegance and comfort with ECHO FINE PROPERTIES.
 
 **</p>
   <p><strong>Uniqueness Score:</strong> ** 88%</p>
-  <p><a href="https://www.zillow.com/homedetails/77-Uno-Lago-Dr-Juno-Beach-FL-33408/63513960_zpid/" target="_blank">View Listing</a></p>
+  <p><a href="https://www.zillow.com/homedetails/122-Lakeshore-Dr-PENTHOUSE-34-North-Palm-Beach-FL-33408/446272372_zpid/" target="_blank">View Listing</a></p>
 </div>
 
 
 <div class="property-card">
-  <h2>Price: $529000</h2>
+  <h2>Price: $1449900</h2>
   <p><strong>Summary:</strong> **  
-Discover refined coastal living at 111 Ocean Dunes Circle in the prestigious Jupiter enclave. Priced at $529,000, this exquisite 2-bedroom, 3-bath residence spans 1,431 square feet of thoughtfully designed space. The home boasts an inviting open floor plan with soaring ceilings and large windows that flood each room with natural light, highlighting the elegant hardwood floors and modern finishes. The gourmet kitchen is a chef’s delight, featuring high-end stainless steel appliances, granite countertops, and a spacious island perfect for entertaining. Retreat to the luxurious primary suite, complete with a spa-like ensuite bathroom and ample closet space. Step outside to a private balcony offering serene views of the lush surroundings, ideal for relaxing or hosting gatherings. Located in a desirable community, residents enjoy access to exclusive amenities, nearby pristine beaches, upscale shopping, and fine dining. Embrace a lifestyle of unparalleled luxury and convenience in this exceptional Jupiter home.
+Experience the pinnacle of luxury living at 703 Voyager Ln, North Palm Beach. This exquisite 4-bedroom, 4-bathroom residence spans 3,482 square feet, showcasing a harmonious blend of modern elegance and timeless architectural design. Step inside to discover spacious, sunlit interiors with high ceilings, custom hardwood flooring, and expansive windows that frame picturesque views. The gourmet kitchen is a culinary masterpiece, featuring state-of-the-art appliances, sleek granite countertops, and bespoke cabinetry. The master suite offers a serene retreat with a lavish en-suite bathroom and a private balcony overlooking beautifully landscaped gardens. Outdoor amenities include a sparkling pool, inviting patio for entertaining, and lush green spaces perfect for relaxation. Located in the heart of North Palm Beach, this home provides unparalleled access to pristine beaches, upscale shopping, fine dining, and premier recreational facilities. Offered by THE KEYES COMPANY (PBG), this property epitomizes exclusivity and sophisticated coastal living, making it a rare gem in today’s market.
 
 **</p>
-  <p><strong>Uniqueness Score:</strong> ** 92%</p>
-  <p><a href="https://www.zillow.com/homedetails/111-Ocean-Dunes-Cir-Jupiter-FL-33477/46819356_zpid/" target="_blank">View Listing</a></p>
+  <p><strong>Uniqueness Score:</strong> ** 88%</p>
+  <p><a href="https://www.zillow.com/homedetails/703-Voyager-Ln-North-Palm-Beach-FL-33410/50941274_zpid/" target="_blank">View Listing</a></p>
 </div>
 
 
 <div class="property-card">
-  <h2>Price: $345000</h2>
-  <p><strong>Summary:</strong> Discover the epitome of luxury living in this exquisite penthouse at 336 Golfview Rd, North Palm Beach. Priced at $345,000, this 2-bedroom, 2-bath condo spans 1,143 sq ft of sophisticated design and elegance. Bask in the abundant natural light streaming through expansive windows, offering panoramic views of pristine golf courses and the shimmering Florida skyline. The open-concept layout features high-end finishes, a gourmet kitchen with stainless steel appliances, and sleek hardwood flooring that flows seamlessly throughout. Step out onto your private balcony to enjoy serene mornings or vibrant sunsets in this exclusive community. Residents benefit from top-tier amenities, including a resort-style pool, state-of-the-art fitness center, and meticulously landscaped gardens. Located in the prestigious Douglas Elliman portfolio, this penthouse provides unparalleled access to premier dining, shopping, and recreational activities, embodying a lifestyle of sophistication and tranquility.</p>
-  <p><strong>Uniqueness Score:</strong> 85%</p>
-  <p><a href="https://www.zillow.com/homedetails/336-Golfview-Rd-PENTHOUSE-15-North-Palm-Beach-FL-33408/447135228_zpid/" target="_blank">View Listing</a></p>
-</div>
-
-
-<div class="property-card">
-  <h2>Price: $342000</h2>
+  <h2>Price: $699000</h2>
   <p><strong>Summary:</strong> **  
-Discover refined living in this exquisite 2-bedroom, 2-bath condo located at 1200 Marine Way, North Palm Beach. Spanning 1,108 square feet, this residence features sleek, modern architectural details with an open-concept layout that seamlessly blends elegance and comfort. Floor-to-ceiling windows illuminate the space with natural light, highlighting the pristine hardwood floors and contemporary finishes. The gourmet kitchen is equipped with stainless steel appliances and granite countertops, perfect for culinary enthusiasts. Step out onto your private balcony to enjoy tranquil views of Marine Way, ideal for relaxing evenings. Situated in a prestigious community managed by JORDYN TAYLOR PROPERTIES, LLC, residents have access to top-tier amenities including a state-of-the-art fitness center, sparkling swimming pool, and secure parking. Nestled in a prime location, this condo offers unparalleled access to North Palm Beach’s vibrant dining, shopping, and recreational scenes, embodying a luxurious and dynamic lifestyle.
+Experience the epitome of coastal luxury at 213 Ocean Dunes Cir, Jupiter, FL. Priced at $699,000, this stunning 2-bedroom, 2-bath residence spans 1,279 square feet of meticulously crafted living space. The home showcases unique architectural elements, including expansive floor-to-ceiling windows that bathe the interiors in natural light and offer picturesque views of the serene surroundings. The open-concept layout seamlessly integrates a gourmet kitchen with high-end stainless steel appliances and elegant cabinetry, perfect for both everyday living and entertaining guests. Step outside to a private patio adorned with lush landscaping, ideal for relaxing or hosting alfresco gatherings. Located in the coveted Ocean Dunes Circle, residents enjoy unparalleled access to pristine beaches, premier golf courses, and vibrant local dining and shopping options. This property embodies an exclusive, luxurious lifestyle, combining sophisticated design with the tranquil beauty of Jupiter’s finest neighborhoods.
 
 **</p>
-  <p><strong>Uniqueness Score:</strong> ** 70%</p>
-  <p><a href="https://www.zillow.com/homedetails/1200-Marine-Way-APT-202-North-Palm-Beach-FL-33408/46885339_zpid/" target="_blank">View Listing</a></p>
-</div>
-
-
-<div class="property-card">
-  <h2>Price: $3750000</h2>
-  <p><strong>Summary:</strong> Discover the epitome of luxury living at 2700 Donald Ross Rd #207, Palm Beach Gardens. This stunning 3-bedroom, 4-bathroom condo spans 3,282 sqft of meticulously crafted space, featuring soaring ceilings and floor-to-ceiling windows that bathe each room in natural light. The open-concept kitchen boasts high-end stainless steel appliances, sleek granite countertops, and custom cabinetry, perfect for gourmet entertaining. Elegant hardwood floors flow throughout, complementing the sophisticated design and upscale finishes. Enjoy serene views from your private balcony or relax in the expansive living area designed for both comfort and style. Located in an exclusive community, residents have access to top-tier amenities including a state-of-the-art fitness center, resort-style pool, and 24-hour concierge service. Situated minutes from premier shopping, fine dining, and pristine golf courses, this condo offers an unmatched blend of elegance, convenience, and a vibrant lifestyle.</p>
-  <p><strong>Uniqueness Score:</strong> 90%</p>
-  <p><a href="https://www.zillow.com/homedetails/2700-Donald-Ross-Rd-207-Palm-Beach-Gardens-FL-33410/295528189_zpid/" target="_blank">View Listing</a></p>
+  <p><strong>Uniqueness Score:</strong> ** 80%</p>
+  <p><a href="https://www.zillow.com/homedetails/213-Ocean-Dunes-Cir-Jupiter-FL-33477/46819403_zpid/" target="_blank">View Listing</a></p>
 </div>

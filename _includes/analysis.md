@@ -29,86 +29,101 @@
 
 
 <div class="property-card">
-  <h2>Price: $4095000</h2>
+  <h2>Price: $650000</h2>
   <p><strong>Summary:</strong> **  
-Discover unparalleled luxury in this stunning 3-bedroom, 4-bath condominium located at 1011 US Highway 1, Juno Beach. Spanning 3,450 square feet, this residence showcases impeccable architectural design with floor-to-ceiling windows that flood the space with natural light and offer breathtaking panoramic views of the Atlantic Ocean. The open-concept floor plan features high vaulted ceilings, elegant hardwood flooring, and top-of-the-line finishes that exude sophistication. The gourmet kitchen is a chef’s dream, equipped with state-of-the-art appliances and sleek quartz countertops. Step outside to a private balcony perfect for entertaining or relaxing while enjoying the serene beachfront ambiance. Residents have exclusive access to premium amenities, including a private infinity pool, a fully equipped fitness center, and direct beach access. Situated in the coveted Juno Beach community, this property provides the perfect blend of tranquil seaside living and vibrant local culture, offering an exceptional lifestyle of exclusivity and elegance.
+Discover refined coastal living at 827 Oak Harbour Drive in the exclusive enclave of Juno Beach. This stunning 2-bedroom, 2-bath condo spans 1,301 square feet, seamlessly blending contemporary design with timeless elegance. Sunlight pours through expansive windows, highlighting the open-concept layout, pristine hardwood floors, and high-end finishes. The gourmet kitchen is a chef’s dream, featuring sleek stainless steel appliances, custom cabinetry, and a spacious island perfect for entertaining. Step out onto your private balcony to enjoy serene harbor views and vibrant sunsets. Residents benefit from top-tier amenities, including a sparkling pool, state-of-the-art fitness center, and secure concierge services, all managed by Coral Cove Realty Inc. Situated moments from pristine beaches, upscale dining, boutique shopping, and cultural hotspots, this condo offers an unparalleled lifestyle of luxury and convenience. Embrace the perfect blend of sophistication and seaside charm in one of Florida’s most coveted locations.
 
 **</p>
-  <p><strong>Uniqueness Score:</strong> ** 88%</p>
-  <p><a href="https://www.zillow.com/homedetails/1011-Us-Highway-1-B306-Juno-Beach-FL-33408/446904373_zpid/" target="_blank">View Listing</a></p>
+  <p><strong>Uniqueness Score:</strong> **  eighty-five percent (85%)</p>
+  <p><a href="https://www.zillow.com/homedetails/827-Oak-Harbour-Dr-Juno-Beach-FL-33408/46801734_zpid/" target="_blank">View Listing</a></p>
 </div>
 
 
 <div class="property-card">
-  <h2>Price: $13495000</h2>
+  <h2>Price: $2195000</h2>
   <p><strong>Summary:</strong> **  
-Experience unparalleled luxury at 2929 Marys Way in the prestigious Palm Beach Gardens. This exquisite 7,175 sq. ft. residence boasts five opulent bedrooms and nine lavish bathrooms, meticulously designed to offer both elegance and comfort. Architectural marvels abound, featuring soaring ceilings, expansive windows that flood the home with natural light, and seamless indoor-outdoor living spaces perfect for entertaining. The gourmet chef’s kitchen is adorned with top-of-the-line appliances and bespoke cabinetry, while the sprawling master suite serves as a private sanctuary with a spa-like bathroom and serene views of the lush, landscaped grounds. Outdoor amenities include a sparkling infinity pool, a stylish patio area, and meticulously maintained gardens, creating a tranquil oasis. Located in a highly sought-after neighborhood, residents enjoy exclusive access to premier golf courses, upscale dining, and world-class shopping. This property epitomizes sophistication and offers a lifestyle of unmatched elegance and privacy.
-
-**</p>
-  <p><strong>Uniqueness Score:</strong> ** 92%</p>
-  <p><a href="https://www.zillow.com/homedetails/2929-Marys-Way-Palm-Beach-Gardens-FL-33410/46673443_zpid/" target="_blank">View Listing</a></p>
-</div>
-
-
-<div class="property-card">
-  <h2>Price: $6600000</h2>
-  <p><strong>Summary:</strong> **  
-Discover unparalleled elegance at 2200 PGA Blvd #713 in North Palm Beach, FL. Priced at $6,600,000, this exquisite 3-bedroom, 5-bathroom condo spans 3,680 square feet of refined living space. Architecturally stunning, the residence boasts floor-to-ceiling windows that flood each room with natural light and offer breathtaking panoramic views of the Intracoastal Waterway. The open-concept layout features high ceilings, premium hardwood flooring, and bespoke finishes that exude sophistication. The gourmet kitchen is a chef’s dream, equipped with top-of-the-line appliances and sleek cabinetry. Residents enjoy access to exclusive amenities, including a state-of-the-art fitness center, infinity pool, and private marina. Located in the heart of North Palm Beach, this property offers seamless access to upscale dining, high-end shopping, and pristine beaches, embodying the ultimate luxury lifestyle. Every detail is meticulously crafted to provide a sanctuary of comfort and style, making this condo a true masterpiece.
-
-**</p>
-  <p><strong>Uniqueness Score:</strong> ** 92%</p>
-  <p><a href="https://www.zillow.com/homedetails/2200-Pga-Blvd-713-North-Palm-Beach-FL-33408/447259592_zpid/" target="_blank">View Listing</a></p>
-</div>
-
-
-<div class="property-card">
-  <h2>Price: $365000</h2>
-  <p><strong>Summary:</strong> **  
-Discover the epitome of Florida elegance at 3102 Pin Oak Ct B in prestigious Palm Beach Gardens. Priced at $365,000, this charming 2-bedroom, 2-bath residence spans 1,152 square feet of meticulously designed living space. The property boasts unique architectural features, including soaring vaulted ceilings, expansive windows that bathe the interiors in natural light, and stylish hardwood flooring that exudes warmth and sophistication. The modern kitchen is a culinary delight, equipped with high-end stainless steel appliances, granite countertops, and custom cabinetry. Step outside to a serene private patio, perfect for alfresco dining or unwinding amidst lush landscaping. Situated in a highly sought-after neighborhood, residents enjoy close proximity to pristine beaches, world-class golf courses, upscale shopping, and gourmet dining. This home offers an unparalleled lifestyle of luxury and convenience, making it a rare gem in the Palm Beach Gardens real estate market.
-
-**</p>
-  <p><strong>Uniqueness Score:</strong> ** 82%</p>
-  <p><a href="https://www.zillow.com/homedetails/3102-Pin-Oak-Ct-B-Palm-Beach-Gardens-FL-33410/447259171_zpid/" target="_blank">View Listing</a></p>
-</div>
-
-
-<div class="property-card">
-  <h2>Price: $1399000</h2>
-  <p><strong>Summary:</strong> **  
-Nestled in the prestigious heart of Jupiter, FL, 197 Ridge Rd offers an exquisite blend of modern elegance and coastal charm. This stunning 3-bedroom, 2-bath residence spans nearly 2,000 square feet, boasting an open-concept layout with soaring ceilings and expansive windows that flood the interior with natural light. The gourmet kitchen is a chef’s dream, featuring high-end stainless steel appliances, sleek quartz countertops, and custom cabinetry. Unique architectural details include a stylish stone fireplace, hardwood flooring, and intricate crown molding that add warmth and sophistication. Step outside to a private backyard oasis, perfect for entertaining, complete with a covered patio and lush landscaping. Located in a serene neighborhood, residents enjoy proximity to pristine beaches, elite golf courses, upscale shopping, and fine dining. This home epitomizes luxury living, offering both tranquility and convenience in one of Florida’s most coveted locales.
+Discover unparalleled elegance at 481 N Juno Ln, nestled in the heart of vibrant Juno Beach. This exquisite 4-bedroom, 4-bath residence spans 2,482 square feet of meticulously designed living space, seamlessly blending modern sophistication with coastal charm. Architectural highlights include soaring vaulted ceilings, expansive glass windows that flood the home with natural light, and custom hardwood flooring that exudes warmth and style. The gourmet kitchen is a chef’s dream, featuring top-of-the-line stainless steel appliances, granite countertops, and a spacious island perfect for entertaining. Step outside to a private oasis with a beautifully landscaped yard, serene patios for outdoor lounging, and a sparkling pool ideal for Florida sun-soaked days. Located minutes from pristine beaches, upscale dining, and boutique shopping, this property offers a luxurious lifestyle of comfort and convenience. Presented by Illustrated Properties LLC (Jupiter), this home epitomizes exclusive living in one of Juno Beach’s most desirable neighborhoods.
 
 **</p>
   <p><strong>Uniqueness Score:</strong> ** 87%</p>
-  <p><a href="https://www.zillow.com/homedetails/197-Ridge-Rd-Jupiter-FL-33477/46817368_zpid/" target="_blank">View Listing</a></p>
+  <p><a href="https://www.zillow.com/homedetails/481-N-Juno-Ln-Juno-Beach-FL-33408/46800364_zpid/" target="_blank">View Listing</a></p>
 </div>
 
 
 <div class="property-card">
-  <h2>Price: $8150000</h2>
+  <h2>Price: $649900</h2>
   <p><strong>Summary:</strong> **  
-Experience unparalleled elegance at 12101 Turtle Beach Rd, nestled in the prestigious North Palm Beach enclave. This stunning 4,489 sq. ft. residence boasts three spacious bedrooms and four luxurious baths, meticulously designed to offer both comfort and sophistication. Architectural marvels abound, from grand vaulted ceilings and expansive glass windows that bathe the home in natural light, to handcrafted stonework and exquisite hardwood flooring that exude timeless charm. Step outside to a private oasis featuring a resort-style pool, lush landscaped gardens, and an outdoor entertainment area perfect for lavish gatherings. Located just minutes from pristine beaches, exclusive golf courses, and upscale shopping and dining, this home embodies the ultimate Florida lifestyle. Every detail has been thoughtfully curated to provide an atmosphere of exclusivity and refined living, making it a true sanctuary for discerning buyers.
-
-**</p>
-  <p><strong>Uniqueness Score:</strong> ** 92%</p>
-  <p><a href="https://www.zillow.com/homedetails/12101-Turtle-Beach-Rd-North-Palm-Beach-FL-33408/46676631_zpid/" target="_blank">View Listing</a></p>
-</div>
-
-
-<div class="property-card">
-  <h2>Price: $2199000</h2>
-  <p><strong>Summary:</strong> Experience unparalleled luxury at 2585 Natures Way, Palm Beach Gardens, where elegant design meets serene living. This exquisite 3,690 sq. ft. residence boasts four spacious bedrooms and three pristine bathrooms, seamlessly blending modern sophistication with timeless charm. Architectural highlights include soaring vaulted ceilings, expansive open-plan living areas bathed in natural light, and premium finishes throughout. The gourmet kitchen is a chef's dream, featuring top-of-the-line appliances, sleek countertops, and custom cabinetry. Step outside to a private oasis with a meticulously landscaped garden, inviting pool, and ample entertaining space perfect for both intimate gatherings and grand soirées. Nestled in the prestigious Palm Beach Gardens community, residents enjoy exclusive access to top-rated schools, upscale shopping, fine dining, and pristine golf courses. This home not only offers a luxurious sanctuary but also a vibrant lifestyle of comfort and elegance, making it a rare gem in the market.</p>
-  <p><strong>Uniqueness Score:</strong> 88%</p>
-  <p><a href="https://www.zillow.com/homedetails/2585-Natures-Way-Palm-Beach-Gardens-FL-33410/46865392_zpid/" target="_blank">View Listing</a></p>
-</div>
-
-
-<div class="property-card">
-  <h2>Price: $2300000</h2>
-  <p><strong>Summary:</strong> **  
-Welcome to 3483 Lantern Bay Dr, a masterpiece of contemporary elegance nestled in the prestigious Jupiter, FL. This exquisite 3-bedroom, 3-bath residence spans 2,576 square feet, offering a harmonious blend of sophisticated architecture and luxurious living. The open-concept layout boasts soaring ceilings, expansive windows that flood the space with natural light, and seamless indoor-outdoor flow ideal for entertaining. Gourmet kitchen features high-end appliances, sleek cabinetry, and a spacious island perfect for culinary creations. The master suite is a serene retreat with a spa-like ensuite and private balcony overlooking lush, landscaped gardens. Outdoor amenities include a pristine pool, stylish patio area, and beautifully designed outdoor kitchen, providing the ultimate Florida lifestyle. Located in a sought-after community, residents enjoy exclusive access to top-rated schools, pristine beaches, and premier golfing. Experience unparalleled elegance and tranquility in this rare Jupiter gem.
+Experience the epitome of coastal elegance at 204 Sea Oats Drive, Apt F in prestigious Juno Beach. This exquisite 2-bedroom, 2-bath condo spans 1,451 square feet, seamlessly blending modern design with serene oceanfront living. Floor-to-ceiling windows flood the open-plan living spaces with natural light, offering breathtaking panoramic views of the Atlantic Ocean and lush tropical landscapes. The gourmet kitchen boasts high-end stainless steel appliances, sleek quartz countertops, and custom cabinetry, perfect for entertaining. Retreat to the luxurious master suite, featuring a spa-like bathroom with a soaking tub and walk-in closet. Residents enjoy exclusive access to top-tier amenities, including a sparkling infinity pool, state-of-the-art fitness center, and private beach access, fostering a vibrant, upscale lifestyle. Nestled in a secure, gated community, this exceptional property offers unparalleled privacy and tranquility, making it a rare gem in the competitive Juno Beach market.
 
 **</p>
   <p><strong>Uniqueness Score:</strong> **  
-88%</p>
-  <p><a href="https://www.zillow.com/homedetails/3483-Lantern-Bay-Dr-Jupiter-FL-33477/46672937_zpid/" target="_blank">View Listing</a></p>
+92%</p>
+  <p><a href="https://www.zillow.com/homedetails/204-Sea-Oats-Dr-APT-F-Juno-Beach-FL-33408/46800043_zpid/" target="_blank">View Listing</a></p>
+</div>
+
+
+<div class="property-card">
+  <h2>Price: $599000</h2>
+  <p><strong>Summary:</strong> **  
+Experience unparalleled luxury and coastal elegance at 1201 Seafarer Cir APT 103 in the heart of Jupiter, FL. This exquisite 2-bedroom, 2-bath condo spans 1,313 square feet, thoughtfully designed with modern architectural finesse and high-end finishes. Sunlit open spaces feature expansive windows that frame breathtaking views of pristine beaches and serene waterways, creating a tranquil retreat. The gourmet kitchen boasts sleek stainless steel appliances, granite countertops, and custom cabinetry, perfect for both everyday living and entertaining guests. Step onto your private balcony to savor Florida’s stunning sunsets or unwind in the meticulously maintained community amenities, including a sparkling pool, state-of-the-art fitness center, and lush landscaped gardens. Located minutes from premier dining, shopping, and world-class golf courses, this residence offers an exclusive lifestyle of comfort, sophistication, and vibrant coastal living. Presented by William Raveis Palm Beach LLC, this gem epitomizes refined condo living in one of Florida’s most sought-after locales.
+
+**</p>
+  <p><strong>Uniqueness Score:</strong> ** 87%</p>
+  <p><a href="https://www.zillow.com/homedetails/1201-Seafarer-Cir-APT-103-Jupiter-FL-33477/46820121_zpid/" target="_blank">View Listing</a></p>
+</div>
+
+
+<div class="property-card">
+  <h2>Price: $225000</h2>
+  <p><strong>Summary:</strong> **  
+Discover refined coastal living at 336 Golfview Rd APT 217 in the heart of North Palm Beach. This exquisite 2-bedroom, 2-bath residence spans 1,143 sqft, seamlessly blending modern elegance with serene waterfront views. Step inside to find an open-concept layout adorned with high-end finishes, hardwood flooring, and large windows that flood the space with natural light. The gourmet kitchen boasts stainless steel appliances, granite countertops, and a spacious island, perfect for entertaining. Retreat to the master suite featuring a luxurious ensuite bath and private balcony, offering stunning sunsets over the golf course. Residents enjoy exclusive access to top-tier amenities including a sparkling pool, state-of-the-art fitness center, and lush landscaped gardens. Located moments from premier dining, upscale shopping, and pristine beaches, this property epitomizes sophisticated Florida living. Embrace a lifestyle of elegance, comfort, and unparalleled convenience in this rare gem.
+
+**</p>
+  <p><strong>Uniqueness Score:</strong> ** 78%</p>
+  <p><a href="https://www.zillow.com/homedetails/336-Golfview-Rd-APT-217-North-Palm-Beach-FL-33408/46885972_zpid/" target="_blank">View Listing</a></p>
+</div>
+
+
+<div class="property-card">
+  <h2>Price: $4500000</h2>
+  <p><strong>Summary:</strong> **  
+Experience unparalleled luxury at 2200 PGA Blvd #305 in the prestigious North Palm Beach. This exquisite 2,875 sq. ft. condo boasts three spacious bedrooms and four opulent bathrooms, thoughtfully designed with high-end finishes and modern elegance. Floor-to-ceiling windows flood the living spaces with natural light, offering stunning panoramic views of lush golf courses and serene waterways. The gourmet kitchen is a chef’s dream, featuring top-of-the-line appliances, quartz countertops, and sleek cabinetry. Entertain effortlessly in the open-concept living and dining areas or unwind on your private balcony, perfect for enjoying Florida’s vibrant sunsets. Residents enjoy exclusive access to world-class amenities, including a state-of-the-art fitness center, resort-style swimming pool, and 24-hour concierge services. Located moments from upscale shopping, fine dining, and pristine beaches, this condo provides a sophisticated lifestyle of comfort and elegance in one of Palm Beach’s most sought-after communities.
+
+**</p>
+  <p><strong>Uniqueness Score:</strong> ** 87%</p>
+  <p><a href="https://www.zillow.com/homedetails/2200-Pga-Blvd-305-North-Palm-Beach-FL-33408/2060002591_zpid/" target="_blank">View Listing</a></p>
+</div>
+
+
+<div class="property-card">
+  <h2>Price: $4500000</h2>
+  <p><strong>Summary:</strong> **  
+Discover unparalleled luxury at 2200 PGA Blvd #305 in the heart of Palm Beach Gardens. This exquisite 3-bedroom, 4-bath residence spans 2,875 sq ft of sophisticated living space, meticulously designed with soaring ceilings and expansive windows that flood the home with natural light. The open-concept layout seamlessly integrates gourmet kitchen featuring top-of-the-line appliances and elegant quartz countertops, perfect for both entertaining and everyday living. Retreat to the lavish master suite, complete with a spa-like ensuite and private balcony offering breathtaking views of pristine golf courses and lush landscapes. Residents enjoy exclusive amenities including a state-of-the-art fitness center, resort-style pool, and 24-hour concierge service. Nestled in a prestigious community, this residence provides convenient access to world-class dining, high-end shopping, and pristine beaches, embodying the ultimate Florida lifestyle. Experience unmatched elegance and comfort in a setting that epitomizes sophistication and exclusivity.
+
+**</p>
+  <p><strong>Uniqueness Score:</strong> ** 90%</p>
+  <p><a href="https://www.zillow.com/homedetails/2200-Pga-Blvd-305-Palm-Beach-Gardens-FL-33410/447289719_zpid/" target="_blank">View Listing</a></p>
+</div>
+
+
+<div class="property-card">
+  <h2>Price: $850000</h2>
+  <p><strong>Summary:</strong> **  
+Welcome to 1305 Mainsail Cir in the prestigious Jupiter, FL, where luxury meets coastal elegance. This stunning 2-bedroom, 2-bath condo spans 1,624 sq ft, boasting a sophisticated open floor plan with soaring ceilings and expansive floor-to-ceiling windows that illuminate the space with natural light and offer mesmerizing views of the vibrant surroundings. The gourmet kitchen is a chef’s dream, featuring high-end stainless steel appliances, sleek quartz countertops, and custom cabinetry. Elegant hardwood flooring flows throughout, complemented by tasteful designer finishes and smart home technology for modern convenience. Step onto your private balcony to savor serene sunrises or unwind with evening breezes. Located in a coveted community, residents enjoy exclusive amenities such as a state-of-the-art fitness center, sparkling swimming pool, and lush landscaped gardens. Situated minutes from pristine beaches, upscale dining, and boutique shopping, this condo embodies a lifestyle of unparalleled sophistication and coastal charm. Experience the epitome of luxury living with LOKATION.
+
+**</p>
+  <p><strong>Uniqueness Score:</strong> **  
+87%</p>
+  <p><a href="https://www.zillow.com/homedetails/1305-Mainsail-Cir-Jupiter-FL-33477/46818225_zpid/" target="_blank">View Listing</a></p>
+</div>
+
+
+<div class="property-card">
+  <h2>Price: $535000</h2>
+  <p><strong>Summary:</strong> **  
+Discover unparalleled elegance in this stunning 3-bedroom, 3-bathroom condo at 370 Golfview Rd APT 404, North Palm Beach. Spanning 1,934 sq ft, this residence boasts floor-to-ceiling windows that capture breathtaking golf course vistas and flood the space with natural light. The open-concept layout features high-end finishes, pristine hardwood floors, and a gourmet kitchen equipped with stainless steel appliances and sleek cabinetry. Luxurious master suite offers a serene retreat with a spa-like bathroom. Residents享受exclusive access to top-tier amenities, including a resort-style pool, state-of-the-art fitness center, and beautifully landscaped gardens. Located in a sought-after community, you're just minutes away from pristine beaches, upscale dining, and premium shopping. This condo not only provides a sophisticated living environment but also embodies the vibrant, luxurious Palm Beach lifestyle, making it a rare gem in the real estate market.
+
+**</p>
+  <p><strong>Uniqueness Score:</strong> ** 80%</p>
+  <p><a href="https://www.zillow.com/homedetails/370-Golfview-Rd-APT-404-North-Palm-Beach-FL-33408/63516678_zpid/" target="_blank">View Listing</a></p>
 </div>

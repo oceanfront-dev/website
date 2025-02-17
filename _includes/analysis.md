@@ -29,57 +29,33 @@
 
 
 <div class="property-card">
-  <h2>Price: $547777</h2>
+  <h2>Price: $1785000</h2>
   <p><strong>Summary:</strong> **  
-Discover unparalleled elegance at 20 Uno Lago Dr, nestled in the prestigious heart of Juno Beach, FL. This exquisite 2-bedroom, 3-bath condo spans 1,556 sq ft, seamlessly blending modern sophistication with coastal charm. Architectural highlights include expansive floor-to-ceiling windows that flood the space with natural light, a gourmet kitchen outfitted with high-end stainless steel appliances, and sleek hardwood flooring throughout. The open-concept living area offers stunning views of serene lagoons and lush landscaping, creating a tranquil retreat. Step onto the private balcony to savor breathtaking sunsets or take advantage of the community’s exclusive amenities, including a state-of-the-art fitness center, sparkling pool, and secure parking. Located minutes from pristine beaches, upscale dining, and vibrant shopping districts, this residence promises a lifestyle of luxury and convenience. Presented by PREMIER BROKERS INTERNATIONAL, this condo epitomizes coastal living at its finest.
+Welcome to 14354 Cypress Island Cir, an exquisite sanctuary nestled in the heart of Palm Beach Gardens. This stunning 2,544 sq. ft. residence boasts four spacious bedrooms and three elegant bathrooms, seamlessly blending contemporary design with timeless sophistication. The grand foyer leads to an open-concept living area, featuring soaring ceilings, expansive windows that flood the space with natural light, and impeccable hardwood flooring. The gourmet kitchen is a chef’s dream, equipped with top-of-the-line stainless steel appliances, granite countertops, and a stylish breakfast bar perfect for entertaining. Step outside to your private oasis, where a meticulously landscaped backyard offers a serene retreat with a sparkling pool, lush greenery, and ample space for outdoor gatherings. Located in a prestigious neighborhood, residents enjoy exclusive access to premier amenities, including golf courses, upscale dining, and vibrant cultural attractions. This masterpiece by REBACK REALTY, INC. epitomizes luxury living, offering an unparalleled lifestyle of elegance and comfort.
 
 **</p>
-  <p><strong>Uniqueness Score:</strong> ** 85%</p>
-  <p><a href="https://www.zillow.com/homedetails/20-Uno-Lago-Dr-Juno-Beach-FL-33408/46802019_zpid/" target="_blank">View Listing</a></p>
+  <p><strong>Uniqueness Score:</strong> ** 88%</p>
+  <p><a href="https://www.zillow.com/homedetails/14354-Cypress-Island-Cir-Palm-Beach-Gardens-FL-33410/46673691_zpid/" target="_blank">View Listing</a></p>
 </div>
 
 
 <div class="property-card">
-  <h2>Price: $714500</h2>
+  <h2>Price: $2599999</h2>
   <p><strong>Summary:</strong> **  
-Discover the epitome of modern elegance at 1709 Mizzen Mast Way, nestled in the prestigious heart of Jupiter, FL. This exquisite 2-bedroom, 2-bath residence spans 1,263 square feet, seamlessly blending contemporary design with luxurious comfort. Architectural highlights include expansive open-concept living spaces flooded with natural light, sleek hardwood floors, and high-end finishes that exude sophistication. The gourmet kitchen boasts state-of-the-art appliances and stylish cabinetry, perfect for both everyday living and entertaining guests. Step outside to a private courtyard oasis, ideal for relaxing or hosting intimate gatherings under the Florida sky. Situated in a serene, upscale neighborhood, residents enjoy exclusive access to nearby top-rated schools, premier shopping, fine dining, and pristine beaches. This home offers a harmonious lifestyle of tranquility and convenience, making it a rare gem in the competitive Jupiter market.
+Experience unparalleled luxury at 2438 Inland Cove Rd, Palm Beach Gardens. This exquisite 4-bedroom, 3-bath residence spans 2,697 square feet of meticulously designed living space, seamlessly blending sophisticated elegance with modern comforts. Architecturally stunning, the home boasts expansive open-concept interiors adorned with high vaulted ceilings, premium hardwood flooring, and floor-to-ceiling windows that flood the space with natural light while offering serene waterway views. The gourmet kitchen is a chef’s dream, featuring top-of-the-line stainless steel appliances, custom cabinetry, and a spacious island perfect for entertaining. Step outside to a private oasis where a sparkling infinity pool, lush tropical landscaping, and a covered patio create the ideal setting for relaxation and upscale outdoor living. Nestled in the prestigious Palm Beach Gardens community, residents enjoy exclusive access to premier golf courses, upscale shopping, fine dining, and pristine beaches. This residence epitomizes the quintessential South Florida lifestyle, offering both tranquility and opulence in a coveted location.
 
 **</p>
-  <p><strong>Uniqueness Score:</strong> ** 78%</p>
-  <p><a href="https://www.zillow.com/homedetails/1709-Mizzen-Mast-Way-Jupiter-FL-33477/46818265_zpid/" target="_blank">View Listing</a></p>
+  <p><strong>Uniqueness Score:</strong> ** 88%</p>
+  <p><a href="https://www.zillow.com/homedetails/2438-Inland-Cove-Rd-Palm-Beach-Gardens-FL-33410/46675635_zpid/" target="_blank">View Listing</a></p>
 </div>
 
 
 <div class="property-card">
-  <h2>Price: $725000</h2>
+  <h2>Price: $750000</h2>
   <p><strong>Summary:</strong> **  
-Discover unparalleled elegance at 605 Ocean Dunes Cir, Jupiter, FL, where sophisticated design meets coastal charm. This exquisite 3-bedroom, 3-bath residence spans 1,746 sq ft, boasting a harmonious blend of modern architecture and timeless luxury. Sunlight floods the open-concept living spaces through expansive windows, highlighting the pristine hardwood floors and high ceilings. The gourmet kitchen is a chef’s dream, featuring top-of-the-line stainless steel appliances, custom cabinetry, and a sleek quartz island perfect for entertaining. Retreat to the master suite, a serene oasis with a spa-like ensuite bathroom and private balcony overlooking meticulously landscaped grounds. Step outside to a beautifully crafted outdoor living area, ideal for al fresco dining and relaxing under the stars. Nestled in the prestigious Compass Florida community, this home offers exclusive access to premier amenities and is just minutes from pristine beaches, upscale shopping, and fine dining. Embrace a lifestyle of luxury and tranquility in this truly exceptional property.
+Experience unparalleled elegance at 134 Lakeshore Drive, Apt 316, nestled in the heart of North Palm Beach. This stunning 1,498 sq. ft. residence boasts three spacious bedrooms and three luxurious bathrooms, thoughtfully designed to offer both comfort and sophistication. Floor-to-ceiling windows frame breathtaking waterfront views, bathing the open-concept living spaces in natural light and providing a serene backdrop for both everyday living and entertaining. The modern kitchen is equipped with high-end stainless steel appliances, sleek cabinetry, and exquisite countertops, perfect for culinary enthusiasts. Residents enjoy exclusive access to top-tier amenities, including a state-of-the-art fitness center, sparkling swimming pool, and beautifully landscaped communal areas. Located just minutes from premier dining, shopping, and pristine beaches, this property offers a lifestyle of unrivaled convenience and luxury. Owned by PREMIER BROKERS INTERNATIONAL, this gem epitomizes the pinnacle of waterfront living in one of Florida’s most coveted locales.
 
 **</p>
-  <p><strong>Uniqueness Score:</strong> **  
-88%</p>
-  <p><a href="https://www.zillow.com/homedetails/605-Ocean-Dunes-Cir-Jupiter-FL-33477/46819436_zpid/" target="_blank">View Listing</a></p>
-</div>
-
-
-<div class="property-card">
-  <h2>Price: $790000</h2>
-  <p><strong>Summary:</strong> **  
-Discover coastal sophistication in this stunning 2-bedroom, 2-bath residence at 301 Ocean Bluffs Blvd #5050, Jupiter. Spanning 1,385 square feet, this elegant home features expansive floor-to-ceiling windows that bathe the interior in natural light and offer breathtaking panoramic views of the Atlantic Ocean and Intracoastal Waterway. The open-concept layout is enhanced by modern architectural details, including sleek hardwood flooring and high-end finishes. The gourmet kitchen is a chef’s dream, equipped with stainless steel appliances, granite countertops, and custom cabinetry. Step out onto the private balcony to enjoy serene sunsets or entertain guests against the backdrop of shimmering waters. Located in the prestigious Ocean Bluffs community, residents benefit from exclusive access to top-tier amenities such as a resort-style pool, fitness center, and secure parking. Just minutes from pristine beaches, fine dining, and upscale shopping, this property embodies the ultimate luxury coastal lifestyle.
-
-**</p>
-  <p><strong>Uniqueness Score:</strong> **  eighty-five percent (85%)</p>
-  <p><a href="https://www.zillow.com/homedetails/301-Ocean-Bluffs-Blvd-5050-Jupiter-FL-33477/46817797_zpid/" target="_blank">View Listing</a></p>
-</div>
-
-
-<div class="property-card">
-  <h2>Price: $995000</h2>
-  <p><strong>Summary:</strong> **  
-Experience unparalleled luxury at 1117 Marine Way E, Apartment K2R, nestled in the heart of North Palm Beach. This exquisite 3-bedroom, 3-bath condo spans 2,379 square feet, showcasing stunning architectural elegance with floor-to-ceiling windows that bathe the space in natural light and offer breathtaking water views. The open-concept living area features high-end finishes, including gourmet stainless steel appliances, Italian marble countertops, and custom cabinetry. Retreat to the spacious master suite, complete with a spa-like en-suite bathroom and expansive walk-in closets. Residents enjoy exclusive access to top-tier amenities such as a state-of-the-art fitness center, sparkling infinity pool, concierge services, and secure parking. Located just minutes from pristine beaches, upscale dining, upscale shopping, and vibrant cultural attractions, this residence embodies the quintessential South Florida lifestyle of sophistication and tranquility. Don’t miss the opportunity to own a slice of paradise in one of Palm Beach’s most coveted addresses.
-
-**</p>
-  <p><strong>Uniqueness Score:</strong> **  
-85%</p>
-  <p><a href="https://www.zillow.com/homedetails/1117-Marine-Way-E-APT-K2R-North-Palm-Beach-FL-33408/46886463_zpid/" target="_blank">View Listing</a></p>
+  <p><strong>Uniqueness Score:</strong> ** 87%</p>
+  <p><a href="https://www.zillow.com/homedetails/134-Lakeshore-Dr-APT-316-North-Palm-Beach-FL-33408/46885616_zpid/" target="_blank">View Listing</a></p>
 </div>

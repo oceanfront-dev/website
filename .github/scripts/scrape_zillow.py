@@ -21,7 +21,7 @@ SEARCH_URL = (
     "https://www.zillow.com/juno-beach-north-palm-beach-fl/"
     "?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22isMapVisible%22%3Afalse%2C"
     "%22mapBounds%22%3A%7B%22north%22%3A26.905794427212427%2C%22south%22%3A26.844316354071616%2C"
-    "%22east%22%3A-80.04391863217162%2C%22west%22%3A-80.07142736782836%7D%2C%22mapZoom%22%3A15%2C"
+    "%22east%22%3A-80.04391863217163%2C%22west%22%3A-80.07142736782837%7D%2C%22mapZoom%22%3A15%2C"
     "%22regionSelection%22%3A%5B%7B%22regionId%22%3A39182%2C%22regionType%22%3A8%7D%5D%2C"
     "%22filterState%22%3A%7B%22sort%22%3A%7B%22value%22%3A%22days%22%7D%2C%22doz%22%3A%7B%22value%22%3A%221%22%7D%7D%2C"
     "%22isListVisible%22%3Atrue%7D"

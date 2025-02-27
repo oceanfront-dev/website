@@ -27,6 +27,9 @@ SEARCH_URL = (
     "%22isListVisible%22%3Atrue%7D"
 )
 
+# Directory for screenshots
+SCREENSHOT_DIR = "screenshots"
+
 class ZillowScraper:
     def __init__(self):
         # Set up Chrome options with headless mode and anti-detection measures.
@@ -43,6 +46,9 @@ class ZillowScraper:
             'AppleWebKit/537.36 (KHTML, like Gecko) '
             'Chrome/120.0.0.0 Safari/537.36'
         )
+        
+        # Create screenshots directory if it doesn't exist
+        os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
     def start_driver(self):
         self.driver = webdriver.Chrome(options=self.options)
@@ -54,10 +60,27 @@ class ZillowScraper:
                 })
             '''
         })
+        # Set window size to ensure proper rendering
+        self.driver.set_window_size(1920, 1080)
 
     def close_driver(self):
         if hasattr(self, 'driver'):
             self.driver.quit()
+            
+    def take_screenshot(self, name="zillow_page"):
+        """Takes a screenshot of the current page state"""
+        if not hasattr(self, 'driver'):
+            return None
+            
+        timestamp = time.strftime("%Y%m%d-%H%M%S")
+        filename = f"{SCREENSHOT_DIR}/{name}_{timestamp}.png"
+        try:
+            self.driver.save_screenshot(filename)
+            print(f"Screenshot saved to {filename}", file=sys.stderr)
+            return filename
+        except Exception as e:
+            print(f"Failed to take screenshot: {str(e)}", file=sys.stderr)
+            return None
 
     def wait_and_scroll(self):
         """Scrolls the page to ensure that dynamic content loads."""
@@ -75,35 +98,75 @@ class ZillowScraper:
     def get_property_data(self, url):
         try:
             self.start_driver()
+            print(f"Navigating to {url}", file=sys.stderr)
             self.driver.get(url)
-            time.sleep(5)  # Allow the initial page load
+            
+            # Take initial screenshot after page load
+            self.take_screenshot("initial_load")
+            
+            # Wait longer for initial page load
+            time.sleep(10)
+            
+            # Check for captcha or other blocking elements
+            if "captcha" in self.driver.page_source.lower() or "robot" in self.driver.page_source.lower():
+                print("Captcha detected! Taking screenshot...", file=sys.stderr)
+                self.take_screenshot("captcha_detected")
+                return pd.DataFrame()
             
             # Try several CSS selectors to match the property cards.
             possible_selectors = [
                 "article[class*='StyledPropertyCard']",
                 "div[class*='property-card']",
                 "div[class*='ListItem']",
-                "div[data-test='property-card']"
+                "div[data-test='property-card']",
+                "li[data-test='search-result-list-item']",
+                "div[id*='search-result-list-item']",
+                "div[class*='result-list-item']"
             ]
+            
             property_elements = None
             used_selector = None
+            
+            # Take screenshot before trying selectors
+            self.take_screenshot("before_selectors")
+            
             for selector in possible_selectors:
                 try:
+                    print(f"Trying selector: {selector}", file=sys.stderr)
                     wait = WebDriverWait(self.driver, 10)
                     property_elements = wait.until(
                         EC.presence_of_all_elements_located((By.CSS_SELECTOR, selector))
                     )
                     if property_elements:
                         used_selector = selector
+                        print(f"Found {len(property_elements)} elements with selector: {selector}", file=sys.stderr)
                         break
                 except TimeoutException:
+                    print(f"Timeout with selector: {selector}", file=sys.stderr)
                     continue
 
             if not property_elements:
                 print("Could not find property elements with any selector", file=sys.stderr)
+                # Take screenshot of the failed page
+                self.take_screenshot("no_elements_found")
+                
+                # Try to extract page source for debugging
+                with open(f"{SCREENSHOT_DIR}/page_source.html", "w", encoding="utf-8") as f:
+                    f.write(self.driver.page_source)
+                print(f"Page source saved to {SCREENSHOT_DIR}/page_source.html", file=sys.stderr)
+                
+                # Check if we have any previous data to return
+                old_data_path = 'zillow_properties.csv'
+                if os.path.exists(old_data_path):
+                    print(f"Returning previous data from {old_data_path}", file=sys.stderr)
+                    return pd.read_csv(old_data_path)
                 return pd.DataFrame()
 
             self.wait_and_scroll()
+            
+            # Take screenshot after scrolling
+            self.take_screenshot("after_scroll")
+            
             soup = BeautifulSoup(self.driver.page_source, 'html.parser')
             properties = []
 
@@ -131,7 +194,7 @@ class ZillowScraper:
                                 })
                             elif data.get("@type") == "Event" and 'offers' in data:
                                 property_data['price'] = data.get('offers', {}).get('price')
-                                # If geo-data isn’t set, try getting it from the location.
+                                # If geo-data isn't set, try getting it from the location.
                                 if not property_data.get('latitude'):
                                     location = data.get('location', {})
                                     geo_data = location.get('geo', {})
@@ -147,6 +210,18 @@ class ZillowScraper:
                     price_elem = card.select_one("[data-test='property-card-price']")
                     if price_elem:
                         property_data['price'] = price_elem.text.strip()
+                    else:
+                        # Try alternative price selectors
+                        alt_price_selectors = [
+                            "span[data-test='price']", 
+                            "span[class*='Price']",
+                            "div[class*='price']"
+                        ]
+                        for price_selector in alt_price_selectors:
+                            price_elem = card.select_one(price_selector)
+                            if price_elem:
+                                property_data['price'] = price_elem.text.strip()
+                                break
 
                 # Ensure we have the property URL.
                 if not property_data.get('url'):
@@ -161,24 +236,57 @@ class ZillowScraper:
                             property_data['url'] = href
                         else:
                             property_data['url'] = 'https://www.zillow.com/' + href
+                    else:
+                        # Try alternative URL selectors
+                        alt_url_selectors = ["a[href*='zpid']", "a[class*='property-card-link']"]
+                        for url_selector in alt_url_selectors:
+                            url_elem = card.select_one(url_selector)
+                            if url_elem and 'href' in url_elem.attrs:
+                                href = url_elem['href']
+                                if href.startswith('/'):
+                                    property_data['url'] = 'https://www.zillow.com' + href
+                                elif href.startswith('http'):
+                                    property_data['url'] = href
+                                else:
+                                    property_data['url'] = 'https://www.zillow.com/' + href
+                                break
 
                 # Extract the "last updated" badge text if available.
                 update_badge = card.find("span", class_=re.compile("StyledPropertyCardBadge-.*"))
                 if update_badge:
                     property_data['last_updated'] = update_badge.text.strip()
 
-                # Build a full address from available address parts.
-                address_parts = []
-                if property_data.get('address'):
-                    address_parts.append(property_data['address'])
-                if property_data.get('city'):
-                    address_parts.append(property_data['city'])
-                if property_data.get('state'):
-                    address_parts.append(property_data['state'])
-                if property_data.get('zip'):
-                    address_parts.append(property_data['zip'])
-                if address_parts:
-                    property_data['full_address'] = ', '.join(address_parts)
+                # Try to extract address if not already found
+                if not property_data.get('address'):
+                    address_elem = card.select_one("[data-test='property-card-addr']")
+                    if address_elem:
+                        full_address = address_elem.text.strip()
+                        property_data['full_address'] = full_address
+                        # Try to parse out components
+                        address_parts = full_address.split(',')
+                        if len(address_parts) >= 1:
+                            property_data['address'] = address_parts[0].strip()
+                        if len(address_parts) >= 2:
+                            property_data['city'] = address_parts[1].strip()
+                        if len(address_parts) >= 3:
+                            state_zip = address_parts[2].strip().split()
+                            if len(state_zip) >= 1:
+                                property_data['state'] = state_zip[0]
+                            if len(state_zip) >= 2:
+                                property_data['zip'] = state_zip[1]
+                else:
+                    # Build a full address from available address parts.
+                    address_parts = []
+                    if property_data.get('address'):
+                        address_parts.append(property_data['address'])
+                    if property_data.get('city'):
+                        address_parts.append(property_data['city'])
+                    if property_data.get('state'):
+                        address_parts.append(property_data['state'])
+                    if property_data.get('zip'):
+                        address_parts.append(property_data['zip'])
+                    if address_parts:
+                        property_data['full_address'] = ', '.join(address_parts)
 
                 # Extract additional statistics (beds, baths, sqft) from details.
                 stats_div = card.select_one("ul[class*='StyledPropertyCardHomeDetailsList']")
@@ -193,6 +301,28 @@ class ZillowScraper:
                         property_data['baths'] = baths_match.group(1)
                     if sqft_match:
                         property_data['sqft'] = sqft_match.group(1).replace(',', '')
+                else:
+                    # Try alternative selectors for property details
+                    beds_elem = card.select_one("[data-test='property-card-beds']")
+                    if beds_elem:
+                        beds_text = beds_elem.text.strip()
+                        beds_match = re.search(r'(\d+)', beds_text)
+                        if beds_match:
+                            property_data['beds'] = beds_match.group(1)
+                    
+                    baths_elem = card.select_one("[data-test='property-card-baths']")
+                    if baths_elem:
+                        baths_text = baths_elem.text.strip()
+                        baths_match = re.search(r'(\d+)', baths_text)
+                        if baths_match:
+                            property_data['baths'] = baths_match.group(1)
+                    
+                    sqft_elem = card.select_one("[data-test='property-card-sqft']")
+                    if sqft_elem:
+                        sqft_text = sqft_elem.text.strip()
+                        sqft_match = re.search(r'([\d,]+)', sqft_text)
+                        if sqft_match:
+                            property_data['sqft'] = sqft_match.group(1).replace(',', '')
 
                 # Optionally, extract property type.
                 type_div = card.find(text=re.compile(r'(House|Condo|Apartment)\s+for\s+sale'))
@@ -212,7 +342,9 @@ class ZillowScraper:
             # Convert the list of properties into a DataFrame.
             df = pd.DataFrame(properties)
             if not df.empty:
-                # Mark “direct results” if possible.
+                print(f"Found {len(df)} properties", file=sys.stderr)
+                
+                # Mark "direct results" if possible.
                 try:
                     results_div = soup.find("div", class_=re.compile("search-page-list-header"))
                     num_direct_results = 0
@@ -238,11 +370,23 @@ class ZillowScraper:
                 for col in numeric_columns:
                     if col in df.columns:
                         df[col] = pd.to_numeric(df[col], errors='coerce')
+            else:
+                print("No properties found in the parsed HTML", file=sys.stderr)
+                self.take_screenshot("no_properties_parsed")
 
             return df
 
         except Exception as e:
             print(f"An error occurred during scraping: {str(e)}", file=sys.stderr)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
+            self.take_screenshot("error_screenshot")
+            
+            # Check if we have any previous data to return
+            old_data_path = 'zillow_properties.csv'
+            if os.path.exists(old_data_path):
+                print(f"Returning previous data from {old_data_path}", file=sys.stderr)
+                return pd.read_csv(old_data_path)
             return pd.DataFrame()
         finally:
             self.close_driver()
@@ -286,6 +430,16 @@ def main():
     try:
         scraper = ZillowScraper()
         df = scraper.get_property_data(SEARCH_URL)
+        
+        if df.empty:
+            print("No data retrieved from scraper", file=sys.stderr)
+            github_output = os.environ.get("GITHUB_OUTPUT")
+            if github_output:
+                with open(github_output, "a") as fh:
+                    fh.write("new_data=false\n")
+                    fh.write("details=Failed to retrieve data from Zillow.\n")
+            return
+            
         current_count = len(df)
         old_count = load_last_count()
         new_listings = current_count - old_count
@@ -321,6 +475,8 @@ def main():
                 print("No new listings found.")
     except Exception as e:
         print(f"Error in main: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
         sys.exit(1)
 
 if __name__ == "__main__":

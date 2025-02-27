@@ -22,17 +22,24 @@ jobs:
         with:
           python-version: "3.9"
 
-      # (Optional) Install Chromedriver if needed:
-      #- name: Install Chromedriver
-      #  run: sudo apt-get install -y chromium-chromedriver
+      # Install Chrome and ChromeDriver
+      - name: Install Chrome
+        run: |
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
 
       - name: Install dependencies
         run: |
-          pip install requests beautifulsoup4 lxml selenium pandas
+          pip install requests beautifulsoup4 lxml selenium pandas webdriver-manager
 
       - name: Run Zillow Scraper
         id: scraper
-        run: python .github/scripts/scrape_zillow.py
+        run: |
+          mkdir -p .github/scripts
+          cp scrape_zillow.py .github/scripts/
+          python .github/scripts/scrape_zillow.py
 
       - name: Upload CSV Artifact
         # This step uploads the CSV so that other jobs or later steps can access it.
@@ -40,6 +47,13 @@ jobs:
         with:
           name: zillow_properties_csv
           path: zillow_properties.csv
+
+      - name: Upload Screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: zillow_screenshots
+          path: screenshots/
+          if-no-files-found: ignore
 
       - name: Commit updated last_count.txt
         if: steps.scraper.outputs.new_data == 'true'

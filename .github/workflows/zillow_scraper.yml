@@ -38,8 +38,8 @@ jobs:
         id: scraper
         run: |
           mkdir -p .github/scripts
-          cp scrape_zillow.py .github/scripts/
-          python .github/scripts/scrape_zillow.py
+          # Run the script directly without copying it
+          python scrape_zillow.py
 
       - name: Upload CSV Artifact
         # This step uploads the CSV so that other jobs or later steps can access it.
